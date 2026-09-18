@@ -105,3 +105,12 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# --- Local additions, kept below the synced template ---
+# The block above is replaced wholesale when the upstream template is
+# re-synced, so anything of our own goes here instead.
+
+# Unity 6 writes the solution in the newer XML format, which the template's
+# `*.sln` does not match. Regenerated from the .csproj files on every sync,
+# so it is build output exactly like they are.
+*.slnx
