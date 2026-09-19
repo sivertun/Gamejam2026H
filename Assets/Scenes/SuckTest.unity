@@ -415,6 +415,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 478401141291714201, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+      propertyPath: beamAngle
+      value: 50.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 478401141291714201, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 478401141291714201, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+      propertyPath: circleBrightness
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 3520838502669580222, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: offset.y
       value: 7
@@ -429,7 +441,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8209145499965774042, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8209145499965774042, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: m_LocalPosition.z
@@ -463,13 +475,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedComponents:
+    - {fileID: 6734153012522454250, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+    - {fileID: 7449875535530436489, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 8899873470089148263, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4888267710888591229, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1255893298}
+      addedObject: {fileID: 1255893310}
   m_SourcePrefab: {fileID: 100100000, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
 --- !u!1001 &592599821
 PrefabInstance:
@@ -819,7 +834,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4888267710888591229, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
   m_PrefabInstance: {fileID: 553254950}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1255893298
+--- !u!114 &1255893310
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -828,33 +843,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1255893296}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0c05c00508ba4a33a67866be995e1d2, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e3b64098df657f38972b7eda2b406ba, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LampSuck
-  range: 6
-  suckAngle: 30
-  pullSpeed: 6
-  absorbDistance: 1
-  blockingLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  lampLight: {fileID: 0}
-  lightColor: {r: 1, g: 0.78, b: 0.35, a: 1}
-  transitionTime: 0.3
-  circleRadius: 8
-  circleBrightness: 5
-  circleHeight: 3
-  circleEdgeHardness: 0.6
-  lightIntensity: 40
-  beamAngle: 90
-  beamTilt: 25
-  beamRangeMultiplier: 2
-  lightOffset: {x: 0, y: 0.3, z: 0.7}
-  beamEdgeHardness: 0.5
-  playerRenderingLayer: 7
-  flickerAmount: 0.12
-  flickerSpeed: 3
-  suckAction: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::TestLantern
 --- !u!1001 &1357177885
 PrefabInstance:
   m_ObjectHideFlags: 0

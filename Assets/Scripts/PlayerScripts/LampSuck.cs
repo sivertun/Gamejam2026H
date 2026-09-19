@@ -69,11 +69,15 @@ public class LampSuck : MonoBehaviour
     private List<IRunawayEnemy> runawayenemies = new List<IRunawayEnemy>();
     private bool hasCalledComeback = false;
 
+    LanternController lanternController;
+
     void Awake()
     {
         // Fall back to the project-wide Suck action (Space / right trigger) if nothing is assigned in the inspector
         action = suckAction != null ? suckAction.action : InputSystem.actions?.FindAction("Player/Suck");
         if (action == null) Debug.LogWarning("LampSuck: no suck action assigned or found", this);
+
+        lanternController = GetComponent<LanternController>();
 
         startRange = range;
         SetupLight();
@@ -178,6 +182,7 @@ public class LampSuck : MonoBehaviour
 
         lampLight = lightObject.AddComponent<Light>();
         lampLight.type = LightType.Spot;
+        lampLight.color = lightColor;
     }
 
     // Put the player's renderers on their own rendering layer and leave that layer out of the lamp,
@@ -222,12 +227,12 @@ public class LampSuck : MonoBehaviour
         Vector3 circlePosition = new Vector3(0f, circleHeight, 0f);
         float groundDistance = GroundDistance(transform.TransformPoint(circlePosition));
         float circleAngle = Mathf.Min(2f * Mathf.Atan2(radius, groundDistance) * Mathf.Rad2Deg, 179f);
-        float circleIntensity = circleBrightness * groundDistance * groundDistance;
+        float circleIntensity = circleBrightness * groundDistance * groundDistance * lanternController.getLightLevel();
         float circleRange = Mathf.Sqrt(groundDistance * groundDistance + radius * radius) * 1.2f;
 
         float angle = Mathf.Lerp(circleAngle, beamAngle, t);
 
-        lampLight.color = lightColor;
+        
         lampLight.intensity = Mathf.Lerp(circleIntensity, beamIntensity, t) * flicker;
         lampLight.range = Mathf.Lerp(circleRange, range * beamRangeMultiplier, t);
         lampLight.spotAngle = angle;

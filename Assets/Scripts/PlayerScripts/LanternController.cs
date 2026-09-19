@@ -1,26 +1,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Light))]
 public class LanternController : MonoBehaviour
 {
     [SerializeField] private float decayPerSec = 0.01f;
-    [SerializeField] private int maxLightIntensity = 30;
     private int lightStage = 1;
     private float lightLevel = 0.2f;    
-    private Light lightObject;
+    private Light lightComponent;
     List<ILightStageObserver> observers = new List<ILightStageObserver>();
 
-    void Awake()
+    void Start()
     {
-        lightObject = GetComponent<Light>();
+        lightComponent = transform.Find("LampLight").GetComponent<Light>();
     }
 
 
     void Update()
     {
         lightLevel -= decayPerSec*Time.deltaTime;
-        lightObject.intensity = lightLevel*maxLightIntensity;
         if (CheckLightDead() == true)
         {
             // Lets kill the player!
@@ -45,13 +42,13 @@ public class LanternController : MonoBehaviour
             switch (lightStage)
             {
                 case 2:
-                    lightObject.color = Color.darkRed;
+                    lightComponent.color = Color.lightBlue;
                     break;
                 case 3:
-                    lightObject.color = Color.darkGreen;
+                    lightComponent.color = Color.lightPink;
                     break;
                 case 4:
-                    lightObject.color = Color.darkMagenta;
+                    lightComponent.color = Color.lightGreen;
                     break;
                 case 5:
                     print("Game won!");
@@ -85,5 +82,10 @@ public class LanternController : MonoBehaviour
         {
             observer.OnLightStageUpgraded(newStage: lightStage);
         }
+    }
+
+    public float getLightLevel()
+    {
+        return lightLevel;
     }
 }
