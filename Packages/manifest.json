@@ -50,7 +50,6 @@
     "com.unity.modules.vehicles": "1.0.0",
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.yourname.autosave": "https://github.com/AnderSystems/Unity-Auto-Save-System.git"
+    "com.unity.modules.xr": "1.0.0"
   }
 }
