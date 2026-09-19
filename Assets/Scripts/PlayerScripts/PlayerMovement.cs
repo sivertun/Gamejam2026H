@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     private Camera mainCamera;
     [SerializeField] private float moveSpeed;
 
+    public bool enable;
 
     [Header("Input Actions")]
     public InputActionReference moveAction;
