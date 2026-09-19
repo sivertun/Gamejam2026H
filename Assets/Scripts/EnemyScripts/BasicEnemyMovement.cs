@@ -16,6 +16,7 @@ public class BasicEnemyMovement : MonoBehaviour, IHasTarget
     {
         float step = moveSpeed * Time.fixedDeltaTime;
         transform.position = Vector3.MoveTowards(transform.position, target.position, step);
+        transform.LookAt(target);
     }
 
     public void SetTarget(Transform target)
