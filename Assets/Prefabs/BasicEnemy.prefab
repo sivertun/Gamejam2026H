@@ -172,6 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc8f801660b4ab290a89790346ae24c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  invincibilityTime: 0.75
   maxHealth: 30
   deadPrefab: {fileID: 1588367899769044331, guid: 5f3373f39fe19696b9b263c0ae86aad9, type: 3}
 --- !u!114 &1465859742361348222
@@ -192,7 +193,7 @@ MonoBehaviour:
   hitboxOffset: {x: 0, y: 0, z: 0.5}
   preHitBuffer: 0.1
   cooldown: 1
-  lifetime: 0.6
+  lifetime: 0.4
   damage: 10
   knockback: 20
   playerWidth: 1
