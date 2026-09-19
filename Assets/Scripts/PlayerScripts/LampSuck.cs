@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class LampSuck : MonoBehaviour
 {
     [SerializeField] private float range = 6f;
-    [SerializeField] private float width = 3f;
+    [SerializeField] private float width = 10f;
     [SerializeField] private float pullSpeed = 6f;
     [SerializeField] private float absorbDistance = 1f;
 
