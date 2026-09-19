@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour, IHasVelocity
 {
     private Rigidbody rb;
     private Camera mainCamera;
@@ -52,5 +52,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         return Quaternion.identity;
+    }
+
+    public void SetVelocity(Vector3 velocity)
+    {
+        this.velocity = velocity;
     }
 }

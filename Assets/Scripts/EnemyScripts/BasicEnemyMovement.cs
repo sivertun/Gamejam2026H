@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class BasicEnemyMovement : MonoBehaviour, IHasTarget
+public class BasicEnemyMovement : MonoBehaviour, IHasTarget, IHasVelocity
 {
     private Rigidbody rb;
 
@@ -28,5 +28,10 @@ public class BasicEnemyMovement : MonoBehaviour, IHasTarget
     public void SetTarget(Transform target)
     {
         this.target = target;
+    }
+
+    public void SetVelocity(Vector3 velocity)
+    {
+        this.velocity = velocity;
     }
 }

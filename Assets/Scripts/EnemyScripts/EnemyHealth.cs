@@ -24,7 +24,8 @@ public class EnemyHealth : MonoBehaviour, IDamagable
 
         Vector3 heading = transform.position - source.position;
         Vector3 direction = heading.normalized;
-        // TODO: knockback
+
+        gameObject.GetComponent<IHasVelocity>().SetVelocity(direction * knockback);
     }
 
     private void Die()
