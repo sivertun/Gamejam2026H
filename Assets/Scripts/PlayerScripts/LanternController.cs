@@ -24,7 +24,6 @@ public class LanternController : MonoBehaviour
         if (CheckLightDead() == true)
         {
             // Lets kill the player!
-            print("TODO: Player died!");
         }
     }
 

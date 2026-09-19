@@ -66,6 +66,9 @@ public class LampSuck : MonoBehaviour
 
     private Vector3 Origin => transform.TransformPoint(lightOffset);
 
+    private List<IRunawayEnemy> runawayenemies = new List<IRunawayEnemy>();
+    private bool hasCalledComeback = false;
+
     void Awake()
     {
         // Fall back to the project-wide Suck action (Space / right trigger) if nothing is assigned in the inspector
@@ -91,8 +94,22 @@ public class LampSuck : MonoBehaviour
         beamAmount = Mathf.MoveTowards(beamAmount, sucking ? 1f : 0f, step);
         ApplyLight();
 
+        if (!sucking && !hasCalledComeback)
+        {
+            foreach (IRunawayEnemy runawayenemy in runawayenemies)
+            {
+                runawayenemy.Comeback();
+            }
+            hasCalledComeback = true;
+            runawayenemies.Clear();
+        }
+
         // Only suck once the beam is mostly out
-        if (sucking && beamAmount > 0.5f) SuckTick();
+        if (sucking && beamAmount > 0.5f) 
+        {
+            SuckTick();
+            hasCalledComeback = false;
+        }
     }
 
     private void SuckTick()
@@ -106,6 +123,12 @@ public class LampSuck : MonoBehaviour
             if (collider.transform.IsChildOf(transform)) continue;
 
             ISuckable suckable = collider.GetComponentInParent<ISuckable>();
+            IRunawayEnemy runawayEnemy = collider.GetComponentInParent<IRunawayEnemy>();
+            if (runawayEnemy != null)
+            {
+                runawayEnemy.Runaway();
+                runawayenemies.Add(runawayEnemy);
+            }
             if (suckable == null) continue;
 
             Transform target = collider.attachedRigidbody != null ? collider.attachedRigidbody.transform : collider.transform;
