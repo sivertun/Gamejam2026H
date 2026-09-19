@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     [Header("Input Actions")]
-    public InputActionReference Move;
+    public InputActionReference moveAction;
 
     void Awake()
     {
@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector3 m_Input = new Vector3(Move.action.ReadValue<Vector2>().x, 0, Move.action.ReadValue<Vector2>().y);
+        Vector3 m_Input = new Vector3(moveAction.action.ReadValue<Vector2>().x, 0, moveAction.action.ReadValue<Vector2>().y);
         rb.MovePosition(transform.position + m_Input * Time.fixedDeltaTime * moveSpeed);
 
         rb.MoveRotation(FindLookRotation());
