@@ -114,3 +114,6 @@ InitTestScene*.unity*
 # `*.sln` does not match. Regenerated from the .csproj files on every sync,
 # so it is build output exactly like they are.
 *.slnx
+
+
+.vscode/
