@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Light))]
 public class LanternController : MonoBehaviour
 {
     [SerializeField] private float decayPerSec = 0.01f;
