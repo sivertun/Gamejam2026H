@@ -16,7 +16,9 @@ public class Hitbox : MonoBehaviour
 
         Debug.Log(other.gameObject.name);
         
-        other.gameObject.GetComponent<IDamagable>().TakeDamage(damage, knockback, attacker.transform);
+        if (!other.gameObject.TryGetComponent(out IDamagable damagable)) return;
+
+        damagable.TakeDamage(damage, knockback, attacker.transform);
 
     }
 
