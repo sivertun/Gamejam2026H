@@ -171,5 +171,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyRunAwayFromLight
   target: {fileID: 0}
-  maxSpeed: 4
+  maxSpeed: 7
   smoothTime: 0.2
