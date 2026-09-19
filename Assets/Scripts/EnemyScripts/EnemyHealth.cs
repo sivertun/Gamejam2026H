@@ -1,16 +1,16 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class EnemyHealth : MonoBehaviour, IDamagable
 {
+
     [SerializeField] private float maxHealth;
     private float health;
-    private Rigidbody rb;
+    
+    [SerializeField] private GameObject deadPrefab;
 
     void Awake()
     {
         health = maxHealth;
-        rb = GetComponent<Rigidbody>();
     }
 
     public void TakeDamage(float damage, float knockback, Transform source)
@@ -31,7 +31,6 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     private void Die()
     {
         Destroy(gameObject);
-
-        // TODO: spawn dead enemy prefab
+        Instantiate(deadPrefab, transform.position, transform.rotation);
     }
 }
