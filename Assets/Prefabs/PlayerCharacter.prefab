@@ -157,7 +157,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   moveSpeed: 2
-  Move: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  moveAction: {fileID: 0}
 --- !u!114 &-6567918044456855295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,3 +170,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e045414ec6a32cafbc8395da55e7dc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  hitboxPrefab: {fileID: 0}
+  hitboxSize: {x: 0, y: 0, z: 0}
+  hitboxOffset: {x: 0, y: 0, z: 0}
+  cooldown: 0
+  lifetime: 0
+  attackAction: {fileID: 0}
