@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Light))]
-public class LanternController : MonoBehaviour
+public class LanternController : MonoBehaviour, IDamagable 
 {
     [SerializeField] private float decayPerSec = 0.01f;
     [SerializeField] private int maxLightIntensity = 30;
+    [SerializeField] private float damageLightLevelConversion = 0.01f;
     private int lightStage = 1;
     private float lightLevel = 0.2f;    
     private Light lightObject;
@@ -86,5 +87,15 @@ public class LanternController : MonoBehaviour
         {
             observer.OnLightStageUpgraded(newStage: lightStage);
         }
+    }
+
+    public void TakeDamage(float damage, float knockback, Transform source)
+    {
+        lightLevel -= damage * damageLightLevelConversion;
+
+        Vector3 heading = transform.position - source.position;
+        Vector3 direction = heading.normalized;
+
+        gameObject.GetComponent<IHasVelocity>().SetVelocity(direction * knockback);
     }
 }
