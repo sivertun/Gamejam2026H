@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public class EnemyRunAwayFromLight : MonoBehaviour, IRunawayEnemy
+public class EnemyRunAwayFromLight : MonoBehaviour, IRunawayEnemy, IHasTarget, IHasVelocity
 {
     private Rigidbody rb;
 
