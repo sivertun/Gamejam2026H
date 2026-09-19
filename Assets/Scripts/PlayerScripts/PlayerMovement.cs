@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour, IHasVelocity
     private Vector3 velocity;
     private Vector3 movementDerivative;
 
+    public bool enable;
 
     [Header("Input Actions")]
     public InputActionReference moveAction;
