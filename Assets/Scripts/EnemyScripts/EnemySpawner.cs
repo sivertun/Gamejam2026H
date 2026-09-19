@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private Transform enemyTarget;
+    [SerializeField] private GameObject enemyTarget;
 
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private float minRange;
@@ -34,9 +34,12 @@ public class EnemySpawner : MonoBehaviour
     }
 
     private void SpawnEnemy(Vector3 position)
+{
+    GameObject enemy = Instantiate(enemyPrefab, position, Quaternion.identity);
+    IHasTarget[] targetScripts = enemy.GetComponents<IHasTarget>();
+    foreach (IHasTarget script in targetScripts)
     {
-        GameObject enemy = Instantiate(enemyPrefab, position, Quaternion.identity);
-        IHasTarget enemyScript = enemy.GetComponent<IHasTarget>();
-        enemyScript.SetTarget(enemyTarget);
+        script.SetTarget(enemyTarget);
     }
+}
 }

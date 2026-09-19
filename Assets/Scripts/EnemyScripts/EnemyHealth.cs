@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour, IDamagable
 {
-
+    [SerializeField] private float invincibilityTime;
+    private float invincibilityTimer;
     [SerializeField] private float maxHealth;
     private float health;
     
@@ -13,8 +14,16 @@ public class EnemyHealth : MonoBehaviour, IDamagable
         health = maxHealth;
     }
 
+    void Update()
+    {
+        if (invincibilityTimer != 0) invincibilityTimer = Mathf.Max(invincibilityTimer - Time.deltaTime, 0);
+    }
+
     public void TakeDamage(float damage, float knockback, Transform source)
     {
+        if (invincibilityTimer != 0) return;
+        invincibilityTimer = invincibilityTime;
+
         health -= damage;
         if (health <= 0)
         {

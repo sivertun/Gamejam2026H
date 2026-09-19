@@ -1,18 +1,19 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class MeleeAttack : MonoBehaviour
+public class EnemyMeleeAttack : MonoBehaviour, IHasTarget
 {
+    [SerializeField] private GameObject target;
     [SerializeField] private GameObject hitboxPrefab;
     [SerializeField] private Vector3 hitboxSize;
     [SerializeField] private Vector3 hitboxOffset;
+    [SerializeField] private float preHitBuffer;
     [SerializeField] private float cooldown;
     [SerializeField] private float lifetime;
     [SerializeField] private float damage;
     [SerializeField] private float knockback;
 
-    [Header("Input Actions")]
-    public InputActionReference attackAction;
+    [Header("Bit spaghetti but dont worry about it")]
+    [SerializeField] private float playerWidth;
 
     private float cooldownTimer;
 
@@ -21,7 +22,7 @@ public class MeleeAttack : MonoBehaviour
     {
         if (cooldownTimer != 0) cooldownTimer = Mathf.Max(cooldownTimer - Time.deltaTime, 0);
 
-        if (attackAction.action.WasPerformedThisFrame())
+        if ((target.transform.position - transform.position).magnitude <= hitboxSize.z + preHitBuffer + playerWidth / 2)
         {
             PerformAttack();
             
@@ -35,8 +36,13 @@ public class MeleeAttack : MonoBehaviour
         Vector3 hitboxPosition = transform.position + transform.rotation * hitboxOffset;
         GameObject hitbox = Instantiate(hitboxPrefab, hitboxPosition, transform.rotation, transform);
         Hitbox hitboxScript = hitbox.GetComponent<Hitbox>();
-        hitboxScript.Initialize(gameObject, null, hitboxSize, damage, knockback, lifetime);
+        hitboxScript.Initialize(gameObject, target, hitboxSize, damage, knockback, lifetime);
 
         cooldownTimer = cooldown;
+    }
+
+    public void SetTarget(GameObject target)
+    {
+        this.target = target;
     }
 }
