@@ -29,7 +29,6 @@ public class LanternController : MonoBehaviour, IDamagable
         if (CheckLightDead() == true)
         {
             // Lets kill the player!
-            print("TODO: Player died!");
         }
     }
 
