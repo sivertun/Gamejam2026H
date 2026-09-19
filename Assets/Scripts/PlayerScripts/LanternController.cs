@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class LanternController : MonoBehaviour
 {
-    [SerializeField] private float lightLevelIncrement = 0.2f;
     [SerializeField] private float decayPerSec = 0.01f;
     [SerializeField] private int maxLightIntensity = 30;
     private int lightStage = 1;
@@ -37,11 +36,31 @@ public class LanternController : MonoBehaviour
         return false;
     }
 
-    public void UpgradeLightLevel() {
-        lightLevel += lightLevelIncrement;
+    public void UpgradeLightLevel(float lightAmount) {
+        lightLevel += lightAmount;
         if (lightLevel >= 1) {
             lightLevel = 0.2f;
             lightStage++;
+
+            switch (lightStage)
+            {
+                case 2:
+                    lightObject.color = Color.darkRed;
+                    break;
+                case 3:
+                    lightObject.color = Color.darkGreen;
+                    break;
+                case 4:
+                    lightObject.color = Color.darkMagenta;
+                    break;
+                case 5:
+                    print("Game won!");
+                    // TODO: Make end game code
+                    break;
+                default:
+                    Debug.LogWarning("Initiated lightStage that does not exist! Warning!");
+                    break;
+            }
             NotifyOnLightStageUpgrade();
         }
     }
