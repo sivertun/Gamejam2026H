@@ -1,6 +1,7 @@
 using UnityEngine;
 
 
+[RequireComponent(typeof(Rigidbody))]
 public class EnemyRunAwayFromLight : MonoBehaviour, IRunawayEnemy, IHasTarget, IHasVelocity
 {
     private Rigidbody rb;
