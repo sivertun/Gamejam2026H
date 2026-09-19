@@ -24,11 +24,13 @@ public class EnemyRunAwayFromLight : MonoBehaviour, IRunawayEnemy, IHasTarget, I
         Vector3 targetVelocity = maxSpeed * moveDirection.normalized * movementDirection;
         velocity = Vector3.SmoothDamp(velocity, targetVelocity, ref movementDerivative, smoothTime);
         rb.MovePosition(transform.position + velocity * Time.fixedDeltaTime);
+
+        transform.LookAt(target);
     }
 
-    public void SetTarget(Transform target)
+    public void SetTarget(GameObject target)
     {
-        this.target = target;
+        this.target = target.transform;
     }
 
     public void SetVelocity(Vector3 velocity)
