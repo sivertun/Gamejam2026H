@@ -9,6 +9,8 @@ public class MeleeAttack : MonoBehaviour
     [SerializeField] private Vector3 hitboxOffset;
     [SerializeField] private float cooldown;
     [SerializeField] private float lifetime;
+    [SerializeField] private float damage;
+    [SerializeField] private float knockback;
 
     [Header("Input Actions")]
     public InputActionReference attackAction;
@@ -34,7 +36,7 @@ public class MeleeAttack : MonoBehaviour
         Vector3 hitboxPosition = transform.position + transform.rotation * hitboxOffset;
         GameObject hitbox = Instantiate(hitboxPrefab, hitboxPosition, transform.rotation, transform);
         Hitbox hitboxScript = hitbox.GetComponent<Hitbox>();
-        hitboxScript.Initialize(gameObject, null, hitboxSize, lifetime);
+        hitboxScript.Initialize(gameObject, null, hitboxSize, damage, knockback, lifetime);
 
         cooldownTimer = cooldown;
     }
