@@ -2,11 +2,15 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour, IHasVelocity
 {
     private Rigidbody rb;
     private Camera mainCamera;
-    [SerializeField] private float moveSpeed;
+
+    [SerializeField] private float maxSpeed;
+    [SerializeField] private float smoothTime;
+    private Vector3 velocity;
+    private Vector3 movementDerivative;
 
     public bool enable;
 
@@ -21,8 +25,10 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector3 m_Input = new Vector3(moveAction.action.ReadValue<Vector2>().x, 0, moveAction.action.ReadValue<Vector2>().y);
-        rb.MovePosition(transform.position + m_Input * Time.fixedDeltaTime * moveSpeed);
+        Vector3 moveInput = new Vector3(moveAction.action.ReadValue<Vector2>().x, 0, moveAction.action.ReadValue<Vector2>().y);
+        Vector3 targetVelocity = maxSpeed * moveInput.normalized;
+        velocity = Vector3.SmoothDamp(velocity, targetVelocity, ref movementDerivative, smoothTime);
+        rb.MovePosition(transform.position + velocity * Time.fixedDeltaTime);
 
         rb.MoveRotation(FindLookRotation());
     }
@@ -47,5 +53,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         return Quaternion.identity;
+    }
+
+    public void SetVelocity(Vector3 velocity)
+    {
+        this.velocity = velocity;
     }
 }

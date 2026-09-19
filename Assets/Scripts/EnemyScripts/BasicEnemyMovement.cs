@@ -1,26 +1,37 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class BasicEnemyMovement : MonoBehaviour, IHasTarget
+public class BasicEnemyMovement : MonoBehaviour, IHasTarget, IHasVelocity
 {
     private Rigidbody rb;
-    [SerializeField] private Transform target;
-    [SerializeField] private float moveSpeed;
 
-    void Start()
+    [SerializeField] private Transform target;
+
+    [SerializeField] private float maxSpeed;
+    [SerializeField] private float smoothTime;
+    private Vector3 velocity;
+    private Vector3 movementDerivative;
+
+    void Awake()
     {
         rb = GetComponent<Rigidbody>();
     }
 
     void FixedUpdate()
     {
-        float step = moveSpeed * Time.fixedDeltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, target.position, step);
-        transform.LookAt(target);
+        Vector3 moveDirection = target.position - transform.position;
+        Vector3 targetVelocity = maxSpeed * moveDirection.normalized;
+        velocity = Vector3.SmoothDamp(velocity, targetVelocity, ref movementDerivative, smoothTime);
+        rb.MovePosition(transform.position + velocity * Time.fixedDeltaTime);
     }
 
     public void SetTarget(Transform target)
     {
         this.target = target;
+    }
+
+    public void SetVelocity(Vector3 velocity)
+    {
+        this.velocity = velocity;
     }
 }
