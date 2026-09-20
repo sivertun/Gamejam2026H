@@ -22356,7 +22356,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 425868772439290823, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: ratePerStage
-      value: 0.2
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 5697842136816540481, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: m_Name
@@ -22368,7 +22368,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5816369402814378322, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: ratePerStage
-      value: 0.2
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6635262824883437989, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: spawnRate
@@ -22376,7 +22376,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6635262824883437989, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: ratePerStage
-      value: 0.2
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 8209145499965774042, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: m_LocalPosition.x
