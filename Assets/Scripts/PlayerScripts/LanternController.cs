@@ -13,6 +13,7 @@ public class LanternController : MonoBehaviour, IDamagable
     private float lightLevel = 0.2f;    
     private Light lightObject;
     List<ILightStageObserver> observers = new List<ILightStageObserver>();
+    private bool dead;
 
     void Awake()
     {
@@ -22,13 +23,15 @@ public class LanternController : MonoBehaviour, IDamagable
 
     void Update()
     {
+        if (dead) return;
         if (invincibilityTimer != 0) invincibilityTimer = Mathf.Max(invincibilityTimer - Time.deltaTime, 0);
 
         lightLevel -= decayPerSec*Time.deltaTime;
         lightObject.intensity = lightLevel*maxLightIntensity;
         if (CheckLightDead() == true)
         {
-            // Lets kill the player!
+            dead = true;
+            DeathSequence.Play();
         }
     }
 
