@@ -405,6 +405,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   lampLight: {fileID: 0}
+  burnMaterial: {fileID: 2100000, guid: e6cf44fb3ef702b4799de9ef1cf58982, type: 2}
+  burstDuration: 0.9
+  burstPullMultiplier: 6
   lightColor: {r: 1, g: 0.78, b: 0.35, a: 1}
   transitionTime: 0.3
   circleRadius: 8

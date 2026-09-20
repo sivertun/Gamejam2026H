@@ -16,6 +16,12 @@ public class LampSuck : MonoBehaviour
     [SerializeField] private float absorbDistance = 1f;
     [Tooltip("Sideways room either side of the beam for grabbing things close to you, in units")]
     [SerializeField] private float grabWidth = 1.5f;
+    [Tooltip("Material for the fire Withering Light leaves on enemies. CustomAssets/Materials/ParticlesUnlit")]
+    [SerializeField] private Material burnMaterial;
+    [Tooltip("How long a Vacuum Burst keeps pulling, so you can watch things fly in")]
+    [SerializeField] private float burstDuration = 0.9f;
+    [Tooltip("How much harder a burst pulls than holding the suck")]
+    [SerializeField] private float burstPullMultiplier = 6f;
     [Tooltip("Things that block sucking (e.g. trees). Leave as Everything to block on any collider.")]
     [SerializeField] private LayerMask blockingLayers = ~0;
 
@@ -73,6 +79,7 @@ public class LampSuck : MonoBehaviour
     private InputAction action;
     private PlayerUpgrades upgrades;
     private float instantSuckTimer;
+    private float burstTimer;
 
     // True while you're holding the suck, which slows your walk and stops you swinging
     public bool IsSucking { get; private set; }
@@ -145,8 +152,11 @@ public class LampSuck : MonoBehaviour
             InstantSuck();
         }
 
+        if (burstTimer > 0f) burstTimer = Mathf.Max(burstTimer - Time.deltaTime, 0f);
+
         float step = transitionTime > 0f ? Time.deltaTime / transitionTime : 1f;
-        beamAmount = Mathf.MoveTowards(beamAmount, sucking ? 1f : 0f, step);
+        // The lamp flares open for a burst too, so it reads as the same move
+        beamAmount = Mathf.MoveTowards(beamAmount, sucking || burstTimer > 0f ? 1f : 0f, step);
         ApplyLight();
         ApplyParticleFields();
 
@@ -160,18 +170,23 @@ public class LampSuck : MonoBehaviour
             runawayenemies.Clear();
         }
 
+        // A burst keeps pulling on its own, so you can let go of the suck and watch it happen
+        if (burstTimer > 0f) SuckTick(true);
+
         // Only suck once the beam is mostly out
         if (sucking && beamAmount > 0.5f) 
         {
-            SuckTick();
+            SuckTick(false);
             hasCalledComeback = false;
         }
     }
 
-    private void SuckTick()
+    private void SuckTick(bool burst)
     {
         Vector3 origin = Origin;
         float halfAngle = SuckAngle * 0.5f;
+        // A burst hauls everything in from every direction, and much harder
+        float speed = SuckSpeedMultiplier * (burst ? burstPullMultiplier : 1f);
         seen.Clear();
 
         foreach (Collider collider in Physics.OverlapSphere(origin, Range))
@@ -199,6 +214,7 @@ public class LampSuck : MonoBehaviour
             Vector3 toTarget = target.position - origin;
             // Bodies drain wherever the beam lights them, pickups need the narrower suck cone
             float allowedAngle = drainable != null || burning != null ? beamAngle * 0.5f : halfAngle;
+            if (burst) allowedAngle = 180f;
             float angle = Vector3.Angle(transform.forward, toTarget);
             // A fixed angle closes to nothing right in front of you, so something being pulled in
             // would slip out of the cone just before it arrived. Allow a sideways wobble as well.
@@ -208,12 +224,16 @@ public class LampSuck : MonoBehaviour
 
             if (drainable != null)
             {
-                drainable.OnDrain(this, Time.deltaTime * SuckSpeedMultiplier);
+                drainable.OnDrain(this, Time.deltaTime * speed);
                 continue;
             }
 
-            // Withering Light: the beam burns whatever living thing it's held on
-            if (burning != null) burning.TakeContinuousDamage(upgrades.suckDamagePerSecond * Time.deltaTime);
+            // Withering Light: the beam burns whatever living thing it's held on, and shows it
+            if (burning != null)
+            {
+                burning.TakeContinuousDamage(upgrades.suckDamagePerSecond * Time.deltaTime);
+                EnemyBurning.Burn(burning.gameObject, burnMaterial, 3f, Time.deltaTime);
+            }
 
             if (suckable == null) continue;
 
@@ -226,7 +246,7 @@ public class LampSuck : MonoBehaviour
             // Pull the suckable toward the lamp
             Rigidbody rb = collider.attachedRigidbody;
             if (rb != null && !rb.isKinematic) rb.isKinematic = true;
-            target.position = Vector3.MoveTowards(target.position, origin, pullSpeed * SuckSpeedMultiplier * Time.deltaTime);
+            target.position = Vector3.MoveTowards(target.position, origin, pullSpeed * speed * Time.deltaTime);
         }
     }
 
@@ -276,28 +296,13 @@ public class LampSuck : MonoBehaviour
         }
     }
 
-    // Vacuum Burst: swallow everything within reach at once, whatever direction it's in
+    // Vacuum Burst: hauls everything within reach toward you for a moment, from any direction.
+    // It runs through the normal suck so things actually fly in rather than blinking out of
+    // existence, see the burst branch in SuckTick.
     private void InstantSuck()
     {
         instantSuckTimer = upgrades.instantSuckCooldown;
-        Vector3 origin = Origin;
-        HashSet<Transform> hit = new HashSet<Transform>();
-
-        foreach (Collider collider in Physics.OverlapSphere(origin, Range))
-        {
-            if (collider.transform.IsChildOf(transform)) continue;
-
-            Transform target = collider.attachedRigidbody != null ? collider.attachedRigidbody.transform : collider.transform;
-            if (!hit.Add(target)) continue;
-
-            // A big time step drains a body in one go, see EnemyCorpse.OnDrain
-            IDrainable drainable = collider.GetComponentInParent<IDrainable>();
-            if (drainable != null) drainable.OnDrain(this, 999f);
-
-            ISuckable suckable = collider.GetComponentInParent<ISuckable>();
-            if (suckable != null) suckable.OnSuck(this);
-        }
-
+        burstTimer = burstDuration;
         Debug.Log("[LampSuck] vacuum burst, next one in " + instantSuckTimer + "s");
     }
 

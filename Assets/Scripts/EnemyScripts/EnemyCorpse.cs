@@ -158,6 +158,9 @@ public class EnemyCorpse : MonoBehaviour, IDrainable
                     continue;
                 }
 
+                // The emitter throws these out at up to 21 units a second, well past the speed
+                // the lamp pulls at, so without clearing that they sail straight past you
+                buffer[i].velocity = Vector3.zero;
                 buffer[i].position += toLamp / distance * Mathf.Min(pullSpeed * deltaTime, distance);
                 // Don't let them die halfway to the lamp
                 buffer[i].remainingLifetime = Mathf.Max(buffer[i].remainingLifetime, 0.3f);
