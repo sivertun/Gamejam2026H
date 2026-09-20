@@ -20,6 +20,7 @@ public static class GameSetupTool
     {
         "Assets/Prefabs/BasicEnemy.prefab",
         "Assets/Prefabs/RunawayEnemy.prefab",
+        "Assets/Prefabs/AssassinEnemy.prefab",
     };
 
     private const string PlayerModelPath = "Assets/Prefabs/TallCreature.prefab";

@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour, IHasVelocity
 
     [SerializeField] private float maxSpeed;
     [SerializeField] private float smoothTime;
-    private Vector3 velocity;
+    public Vector3 velocity;
     private Vector3 movementDerivative;
 
     public bool enable;
