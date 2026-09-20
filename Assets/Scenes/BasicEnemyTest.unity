@@ -231,11 +231,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &377792876 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4888267710888591229, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
-  m_PrefabInstance: {fileID: 1226369344}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &678013166
 GameObject:
   m_ObjectHideFlags: 0
@@ -371,21 +366,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 425868772439290823, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
-      propertyPath: spawnRate
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 425868772439290823, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
-      propertyPath: enemyTarget
-      value: 
-      objectReference: {fileID: 377792876}
     - target: {fileID: 5697842136816540481, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 5816369402814378322, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
-      propertyPath: spawnRate
-      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8209145499965774042, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: m_LocalPosition.x
