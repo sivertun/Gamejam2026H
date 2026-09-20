@@ -223,7 +223,7 @@ Transform:
   - {fileID: 3867575429036592357}
   - {fileID: 3465709328416590109}
   - {fileID: 4375943029836265962}
-  - {fileID: 2350523335703808245}
+  - {fileID: 2950151376471357040}
   m_Father: {fileID: 8209145499965774042}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2724557405600726037
@@ -531,7 +531,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c49a4e11271ae453dad15a46b3b255c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterAnimator
-  animator: {fileID: 8428517452417571701}
+  animator: {fileID: 8977834020265502192}
   speedDampTime: 0.1
 --- !u!1 &4938750061845857530
 GameObject:
@@ -1312,7 +1312,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d51619ecd6055fe9a606118e94f5910, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
---- !u!1001 &5050888454992272537
+--- !u!1001 &5654247097373794844
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1381,15 +1381,15 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1982464a1ab57f54b823451a8ec15ed8, type: 3}
---- !u!4 &2350523335703808245 stripped
+--- !u!4 &2950151376471357040 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7387839409066595436, guid: 1982464a1ab57f54b823451a8ec15ed8, type: 3}
-  m_PrefabInstance: {fileID: 5050888454992272537}
+  m_PrefabInstance: {fileID: 5654247097373794844}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &8428517452417571701 stripped
+--- !u!95 &8977834020265502192 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 3666008980220020716, guid: 1982464a1ab57f54b823451a8ec15ed8, type: 3}
-  m_PrefabInstance: {fileID: 5050888454992272537}
+  m_PrefabInstance: {fileID: 5654247097373794844}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7009987763367635913
 PrefabInstance:
