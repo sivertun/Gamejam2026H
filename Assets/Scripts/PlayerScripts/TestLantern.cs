@@ -17,7 +17,7 @@ public class TestLantern : MonoBehaviour, ILightStageObserver
     void Update()
     {
         count += 1*Time.deltaTime;
-        if (count >= 5)
+        if (count >= 1)
         {
             print("Light increased");
             count = 0;
