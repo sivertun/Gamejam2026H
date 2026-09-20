@@ -27,6 +27,7 @@ public class BasicEnemyMovement : MonoBehaviour, IHasTarget, IHasVelocity
 
     public void SetTarget(Transform target)
     {
+        print("kalt");
         this.target = target;
     }
 
