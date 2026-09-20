@@ -176,7 +176,7 @@ MonoBehaviour:
   maxSpeed: 6.5
   minSpeed: 4
   predictionAmount: 4
-  margin: 0
+  margin: 0.2
   slowdownDistance: 4
   smoothTime: 0.25
 --- !u!114 &4629563191302169912
