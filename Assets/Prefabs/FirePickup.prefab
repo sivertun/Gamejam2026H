@@ -177,4 +177,4 @@ MonoBehaviour:
   lightRange: 8
   flickerAmount: 0.25
   flickerSpeed: 6
-  lightCullDistance: 45
+  lightCullDistance: 26
