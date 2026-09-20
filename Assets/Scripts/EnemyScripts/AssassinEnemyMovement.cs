@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class AssassinEnemy : MonoBehaviour
+public class AssassinEnemy : MonoBehaviour, IHasTarget, IHasVelocity
 {
     private Rigidbody rb;
 
@@ -35,9 +35,9 @@ public class AssassinEnemy : MonoBehaviour
         rb.MovePosition(transform.position + velocity * Time.fixedDeltaTime);
     }
 
-    public void SetTarget(Transform target)
+    public void SetTarget(GameObject target)
     {
-        this.target = target;
+        this.target = target.transform;
     }
 
     public void SetVelocity(Vector3 velocity)
