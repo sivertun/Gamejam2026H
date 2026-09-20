@@ -10,13 +10,15 @@ public class LanternController : MonoBehaviour, IDamagable
     [SerializeField] private float lightLostPerHit = 0.04f;
     [Tooltip("Share of the light you're carrying that each hit takes. 0.18 = 18% of it")]
     [SerializeField, Range(0f, 1f)] private float shareLostPerHit = 0.18f;
-    [Tooltip("Light the lantern starts the game with")]
+    [Tooltip("Light the lantern starts each stage with, and drops back to when you upgrade")]
     [SerializeField] private float startLightLevel = 0.2f;
 
     [Header("How far the light reaches")]
     [Tooltip("How sharply size follows the light. 0.5 is a square root: four times the light is " +
              "twice the reach. Lower is flatter, 1 is straight through.")]
-    [SerializeField, Range(0.2f, 1f)] private float growthPower = 0.5f;
+    [SerializeField, Range(0.2f, 1f)] private float growthPower = 0.45f;
+    [Tooltip("How much bigger the light gets for good with each stage reached. 1.35 = 35% a stage")]
+    [SerializeField] private float stageGrowthBonus = 1.25f;
 
     [Header("Stage colours")]
     [Tooltip("Colour of the light at each stage. The first one is what you start the game with")]
@@ -67,23 +69,24 @@ public class LanternController : MonoBehaviour, IDamagable
         }
     }
 
-    // All the light in the lantern, and the one number the rest of the game reads. It is your
-    // health, it sets how far and how brightly you see, and the whole numbers it passes are the
-    // light stages. Only decay and damage take it away.
+    // How full the lantern is, between 0 and 1. This is your health: decay and hits take it away,
+    // fire and bodies put it back, filling it upgrades the lantern, and at 0 you die.
     public float TotalLight => lightLevel;
 
     // What TotalLight is at the very start of the game, so others can size themselves against it
     public float StartLight => startLightLevel;
 
     // How big the light is against the start of the game, and the only thing the lamp reads.
-    // It answers to every bit of light, with no floor and no ceiling: there is nowhere on the
-    // curve where gaining or losing light does nothing, so every hit shows up on screen.
+    // Two parts: what's in the lantern now, which you lose on every hit and give up when you
+    // upgrade, and a bonus each stage keeps for good. So an upgrade sets you back but still
+    // leaves you better off than the stage before, and the fill part answers to every hit.
     public float LightGrowth
     {
         get
         {
             if (startLightLevel <= 0f) return 1f;
-            return Mathf.Pow(Mathf.Max(TotalLight, 0f) / startLightLevel, growthPower);
+            float fill = Mathf.Pow(Mathf.Max(lightLevel, 0f) / startLightLevel, growthPower);
+            return fill * Mathf.Pow(stageGrowthBonus, lightStage - 1);
         }
     }
 
@@ -116,9 +119,17 @@ public class LanternController : MonoBehaviour, IDamagable
     // How full the lantern is within the current stage
     public float LightLevel => lightLevel;
 
-    // Light banked since the game began: 0 at the start, about +1 per light stage. Used as the
-    // difficulty clock, see EnemySpawner.
-    public float LightProgress => Mathf.Max(0f, lightLevel - startLightLevel);
+    // How far through the game you are: 0 at the start and +1 per stage, running smoothly across
+    // an upgrade. Unlike the light itself this never falls back, so the enemies keep ramping up
+    // even though upgrading costs you your fill. Used as the difficulty clock, see EnemySpawner.
+    public float LightProgress
+    {
+        get
+        {
+            float stageSpan = Mathf.Max(1f - startLightLevel, 0.0001f);
+            return (lightStage - 1) + Mathf.Clamp01((lightLevel - startLightLevel) / stageSpan);
+        }
+    }
 
     private bool CheckLightDead()
     {
@@ -133,9 +144,14 @@ public class LanternController : MonoBehaviour, IDamagable
     public void UpgradeLightLevel(float lightAmount) {
         lightLevel += lightAmount;
 
-        // Stages are milestones the light passes, not a bar that empties, so reaching one never
-        // costs you brightness or reach. Stage 2 is at 1 light, stage 3 at 2, and so on.
-        while (lightLevel >= lightStage) ReachNextStage();
+        // Filling the lantern upgrades it, and the upgrade spends the fill: your light drops back
+        // to a starting flame, so your health and your reach both fall. The stage bonus in
+        // LightGrowth is what you keep, so you still come out ahead of the stage before.
+        if (lightLevel >= 1f)
+        {
+            lightLevel = startLightLevel;
+            ReachNextStage();
+        }
     }
 
     private void ReachNextStage()
