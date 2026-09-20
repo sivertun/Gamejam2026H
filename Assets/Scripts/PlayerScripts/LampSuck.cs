@@ -67,8 +67,19 @@ public class LampSuck : MonoBehaviour
 
     [Header("Input Actions")]
     public InputActionReference suckAction;
+    [Tooltip("Key that fires the Vacuum Burst upgrade")]
+    [SerializeField] private Key instantSuckKey = Key.Q;
 
     private InputAction action;
+    private PlayerUpgrades upgrades;
+    private float instantSuckTimer;
+
+    // True while you're holding the suck, which slows your walk and stops you swinging
+    public bool IsSucking { get; private set; }
+
+    // What the upgrades have made of the lamp, for anything being sucked to read
+    public PlayerUpgrades Upgrades => upgrades;
+    public float SuckSpeedMultiplier => upgrades != null ? upgrades.suckSpeedMultiplier : 1f;
     private float beamAmount; // 0 = circle, 1 = beam
     private float[] particleFieldStartRanges;
     private float[] particleFieldEndRanges;
@@ -81,8 +92,11 @@ public class LampSuck : MonoBehaviour
     private Color LampColor => lantern != null ? lantern.CurrentColor : lightColor;
 
 
-    // How far the lamp reaches right now
-    public float Range => range * Growth;
+    // How far the lamp reaches right now: the lantern's light, plus whatever upgrades add
+    public float Range => range * Growth * (upgrades != null ? upgrades.rangeMultiplier : 1f);
+
+    // The suck cone, widened by upgrades
+    private float SuckAngle => suckAngle + (upgrades != null ? upgrades.suckAngleBonus : 0f);
     private readonly HashSet<Transform> seen = new HashSet<Transform>();
 
     private Vector3 Origin => transform.TransformPoint(lightOffset);
@@ -99,6 +113,7 @@ public class LampSuck : MonoBehaviour
         action = suckAction != null ? suckAction.action : InputSystem.actions?.FindAction("Player/Suck");
         if (action == null) Debug.LogWarning("LampSuck: no suck action assigned or found", this);
 
+        upgrades = PlayerUpgrades.Ensure(gameObject);
         if (lantern == null) lantern = GetComponentInParent<LanternController>();
         if (lantern == null) Debug.LogWarning("LampSuck: no lantern found, the lamp will stay its starting size", this);
 
@@ -119,7 +134,16 @@ public class LampSuck : MonoBehaviour
 
     void Update()
     {
-        bool sucking = action != null && action.IsPressed();
+        bool sucking = action != null && action.IsPressed() && !UpgradeChooser.IsChoosing;
+        IsSucking = sucking;
+
+        if (instantSuckTimer > 0f) instantSuckTimer = Mathf.Max(instantSuckTimer - Time.deltaTime, 0f);
+        if (upgrades != null && upgrades.hasInstantSuck && instantSuckTimer <= 0f
+            && Keyboard.current != null && Keyboard.current[instantSuckKey].wasPressedThisFrame
+            && !UpgradeChooser.IsChoosing)
+        {
+            InstantSuck();
+        }
 
         float step = transitionTime > 0f ? Time.deltaTime / transitionTime : 1f;
         beamAmount = Mathf.MoveTowards(beamAmount, sucking ? 1f : 0f, step);
@@ -147,7 +171,7 @@ public class LampSuck : MonoBehaviour
     private void SuckTick()
     {
         Vector3 origin = Origin;
-        float halfAngle = suckAngle * 0.5f;
+        float halfAngle = SuckAngle * 0.5f;
         seen.Clear();
 
         foreach (Collider collider in Physics.OverlapSphere(origin, Range))
@@ -162,14 +186,19 @@ public class LampSuck : MonoBehaviour
                 runawayenemies.Add(runawayEnemy);
             }
             IDrainable drainable = collider.GetComponentInParent<IDrainable>();
-            if (suckable == null && drainable == null) continue;
+            // A living enemy is neither suckable nor drainable, so Withering Light has to let it
+            // through this filter or the beam would never reach it
+            EnemyHealth burning = upgrades != null && upgrades.suckDamagePerSecond > 0f
+                ? collider.GetComponentInParent<EnemyHealth>()
+                : null;
+            if (suckable == null && drainable == null && burning == null) continue;
 
             Transform target = collider.attachedRigidbody != null ? collider.attachedRigidbody.transform : collider.transform;
             if (!seen.Add(target)) continue;
 
             Vector3 toTarget = target.position - origin;
             // Bodies drain wherever the beam lights them, pickups need the narrower suck cone
-            float allowedAngle = drainable != null ? beamAngle * 0.5f : halfAngle;
+            float allowedAngle = drainable != null || burning != null ? beamAngle * 0.5f : halfAngle;
             float angle = Vector3.Angle(transform.forward, toTarget);
             // A fixed angle closes to nothing right in front of you, so something being pulled in
             // would slip out of the cone just before it arrived. Allow a sideways wobble as well.
@@ -179,9 +208,14 @@ public class LampSuck : MonoBehaviour
 
             if (drainable != null)
             {
-                drainable.OnDrain(this, Time.deltaTime);
+                drainable.OnDrain(this, Time.deltaTime * SuckSpeedMultiplier);
                 continue;
             }
+
+            // Withering Light: the beam burns whatever living thing it's held on
+            if (burning != null) burning.TakeContinuousDamage(upgrades.suckDamagePerSecond * Time.deltaTime);
+
+            if (suckable == null) continue;
 
             if (toTarget.magnitude <= absorbDistance)
             {
@@ -192,7 +226,7 @@ public class LampSuck : MonoBehaviour
             // Pull the suckable toward the lamp
             Rigidbody rb = collider.attachedRigidbody;
             if (rb != null && !rb.isKinematic) rb.isKinematic = true;
-            target.position = Vector3.MoveTowards(target.position, origin, pullSpeed * Time.deltaTime);
+            target.position = Vector3.MoveTowards(target.position, origin, pullSpeed * SuckSpeedMultiplier * Time.deltaTime);
         }
     }
 
@@ -240,6 +274,31 @@ public class LampSuck : MonoBehaviour
             particleFields[i].startRange = particleFieldStartRanges[i] * scale;
             particleFields[i].endRange = particleFieldEndRanges[i] * scale;
         }
+    }
+
+    // Vacuum Burst: swallow everything within reach at once, whatever direction it's in
+    private void InstantSuck()
+    {
+        instantSuckTimer = upgrades.instantSuckCooldown;
+        Vector3 origin = Origin;
+        HashSet<Transform> hit = new HashSet<Transform>();
+
+        foreach (Collider collider in Physics.OverlapSphere(origin, Range))
+        {
+            if (collider.transform.IsChildOf(transform)) continue;
+
+            Transform target = collider.attachedRigidbody != null ? collider.attachedRigidbody.transform : collider.transform;
+            if (!hit.Add(target)) continue;
+
+            // A big time step drains a body in one go, see EnemyCorpse.OnDrain
+            IDrainable drainable = collider.GetComponentInParent<IDrainable>();
+            if (drainable != null) drainable.OnDrain(this, 999f);
+
+            ISuckable suckable = collider.GetComponentInParent<ISuckable>();
+            if (suckable != null) suckable.OnSuck(this);
+        }
+
+        Debug.Log("[LampSuck] vacuum burst, next one in " + instantSuckTimer + "s");
     }
 
     private void SetupLight()

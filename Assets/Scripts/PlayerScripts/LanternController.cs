@@ -171,6 +171,9 @@ public class LanternController : MonoBehaviour, IDamagable
 
         Debug.Log("[Lantern] reached light stage " + lightStage);
         NotifyOnLightStageUpgrade();
+
+        // The roguelite bit: every stage buys you an upgrade
+        UpgradeChooser.Offer(gameObject);
     }
 
     public void DowngradeLightLevel(float decreaseAmount)

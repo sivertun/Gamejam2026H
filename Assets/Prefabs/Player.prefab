@@ -195,6 +195,7 @@ GameObject:
   - component: {fileID: 3844404437205502244}
   - component: {fileID: 4981410849197009739}
   - component: {fileID: 478401141291714201}
+  - component: {fileID: 4783011412917142099}
   - component: {fileID: 5984960774489288056}
   m_Layer: 0
   m_Name: PlayerCharacter
@@ -1348,3 +1349,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 292679811867140161, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
   m_PrefabInstance: {fileID: 7009987763367635913}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4783011412917142099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4888267710888591229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a7b1c9d5e2f48a6b8c0d1e2f3a4b5c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rangeMultiplier: 1
+  suckAngleBonus: 0
+  suckSpeedMultiplier: 1
+  suckMoveSpeed: 0.45
+  enemyLightMultiplier: 1
+  suckDamagePerSecond: 0
+  hasInstantSuck: 0
+  instantSuckCooldown: 20

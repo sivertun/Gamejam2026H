@@ -17,16 +17,24 @@ public class PlayerMovement : MonoBehaviour, IHasVelocity
     [Header("Input Actions")]
     public InputActionReference moveAction;
 
+    private LampSuck lampSuck;
+    private PlayerUpgrades upgrades;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
+        lampSuck = GetComponent<LampSuck>();
+        upgrades = PlayerUpgrades.Ensure(gameObject);
     }
+
+    // Holding the suck plants your feet. Steady Hands gives most of the speed back.
+    private float SpeedMultiplier => lampSuck != null && lampSuck.IsSucking ? upgrades.suckMoveSpeed : 1f;
 
     void FixedUpdate()
     {
         Vector3 moveInput = new Vector3(moveAction.action.ReadValue<Vector2>().x, 0, moveAction.action.ReadValue<Vector2>().y);
-        Vector3 targetVelocity = maxSpeed * moveInput.normalized;
+        Vector3 targetVelocity = maxSpeed * SpeedMultiplier * moveInput.normalized;
         velocity = Vector3.SmoothDamp(velocity, targetVelocity, ref movementDerivative, smoothTime);
         rb.MovePosition(transform.position + velocity * Time.fixedDeltaTime);
 

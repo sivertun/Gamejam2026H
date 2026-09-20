@@ -18,10 +18,12 @@ public class MeleeAttack : MonoBehaviour
 
     private float cooldownTimer;
     private CharacterAnimator characterAnimator;
+    private LampSuck lampSuck;
 
     void Awake()
     {
         characterAnimator = GetComponent<CharacterAnimator>();
+        lampSuck = GetComponent<LampSuck>();
     }
 
     void Update()
@@ -38,6 +40,9 @@ public class MeleeAttack : MonoBehaviour
     private void PerformAttack()
     {
         if (cooldownTimer != 0) return;
+        // Both hands are busy holding the lamp up
+        if (lampSuck != null && lampSuck.IsSucking) return;
+        if (UpgradeChooser.IsChoosing) return;
 
         if (characterAnimator != null) characterAnimator.PlayAttack();
         if (hitDelay > 0) Invoke(nameof(SpawnHitbox), hitDelay);

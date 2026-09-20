@@ -121,7 +121,8 @@ public class EnemyCorpse : MonoBehaviour, IDrainable
 
         float step = Mathf.Min(deltaTime, drainTime - drained);
         drained += step;
-        if (lantern != null && step > 0f) lantern.UpgradeLightLevel(lightReward * step / drainTime);
+        float reward = lightReward * (lamp.Upgrades != null ? lamp.Upgrades.enemyLightMultiplier : 1f);
+        if (lantern != null && step > 0f) lantern.UpgradeLightLevel(reward * step / drainTime);
 
         PullParticles(lamp.LampOrigin, deltaTime);
 
