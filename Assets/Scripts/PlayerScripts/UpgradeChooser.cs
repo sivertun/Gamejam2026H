@@ -70,10 +70,22 @@ public class UpgradeChooser : MonoBehaviour
         Keyboard keyboard = Keyboard.current;
         if (keyboard == null) return false;
 
-        Key digit = number == 1 ? Key.Digit1 : number == 2 ? Key.Digit2 : Key.Digit3;
-        Key numpad = number == 1 ? Key.Numpad1 : number == 2 ? Key.Numpad2 : Key.Numpad3;
-        return keyboard[digit].wasPressedThisFrame || keyboard[numpad].wasPressedThisFrame;
+        if (number < 1 || number > DigitKeys.Length) return false;
+        return keyboard[DigitKeys[number - 1]].wasPressedThisFrame
+            || keyboard[NumpadKeys[number - 1]].wasPressedThisFrame;
     }
+
+    private static readonly Key[] DigitKeys =
+    {
+        Key.Digit1, Key.Digit2, Key.Digit3, Key.Digit4, Key.Digit5,
+        Key.Digit6, Key.Digit7, Key.Digit8, Key.Digit9,
+    };
+
+    private static readonly Key[] NumpadKeys =
+    {
+        Key.Numpad1, Key.Numpad2, Key.Numpad3, Key.Numpad4, Key.Numpad5,
+        Key.Numpad6, Key.Numpad7, Key.Numpad8, Key.Numpad9,
+    };
 
     // ---------- the screen ----------
 
@@ -88,7 +100,7 @@ public class UpgradeChooser : MonoBehaviour
         heading.color = new Color(1f, 0.85f, 0.55f);
         Place(heading.rectTransform, new Vector2(0f, 330f), new Vector2(1500f, 130f));
 
-        Text hint = MakeText(canvas, "Hint", "choose one", 34, BodyFont);
+        Text hint = MakeText(canvas, "Hint", $"choose one  ·  press 1 to {choices.Count}", 34, BodyFont);
         hint.color = new Color(0.7f, 0.7f, 0.75f);
         Place(hint.rectTransform, new Vector2(0f, 250f), new Vector2(1500f, 60f));
 
@@ -97,11 +109,24 @@ public class UpgradeChooser : MonoBehaviour
 
     private void BuildCard(Transform canvas, int index)
     {
-        const float spacing = 520f;
-        float x = (index - (choices.Count - 1) * 0.5f) * spacing;
+        // Three across reads best, but the whole pool at once needs a grid, so the cards shrink
+        int columns = Mathf.Min(choices.Count, 4);
+        int rows = Mathf.CeilToInt(choices.Count / (float)columns);
+        bool roomy = rows == 1;
+
+        float cardWidth = roomy ? 480f : 420f;
+        float cardHeight = roomy ? 420f : 300f;
+
+        int row = index / columns;
+        int column = index % columns;
+        // The last row can be short, so centre whatever is actually in this row
+        int inThisRow = Mathf.Min(columns, choices.Count - row * columns);
+
+        float x = (column - (inThisRow - 1) * 0.5f) * (cardWidth + 40f);
+        float y = -(row - (rows - 1) * 0.5f) * (cardHeight + 30f) - (roomy ? 40f : 70f);
 
         Image card = DeathSequence.MakeImage(canvas, "Card" + index, new Color(0.06f, 0.06f, 0.08f, 0.96f));
-        Place(card.rectTransform, new Vector2(x, -40f), new Vector2(480f, 420f));
+        Place(card.rectTransform, new Vector2(x, y), new Vector2(cardWidth, cardHeight));
 
         // A warm bar along the top, so the cards read as lantern light rather than menu boxes
         Image bar = DeathSequence.MakeImage(card.transform, "Bar", new Color(1f, 0.72f, 0.35f, 0.9f));
@@ -111,23 +136,26 @@ public class UpgradeChooser : MonoBehaviour
         bar.rectTransform.sizeDelta = new Vector2(0f, 8f);
         bar.rectTransform.anchoredPosition = Vector2.zero;
 
-        Text number = MakeText(card.transform, "Number", (index + 1).ToString(), 44, BodyFont);
+        float inner = cardWidth - 60f;
+        float top = cardHeight * 0.5f;
+
+        Text number = MakeText(card.transform, "Number", (index + 1).ToString(), roomy ? 44 : 34, BodyFont);
         number.color = new Color(1f, 0.72f, 0.35f);
-        Place(number.rectTransform, new Vector2(0f, 140f), new Vector2(420f, 70f));
+        Place(number.rectTransform, new Vector2(0f, top - 50f), new Vector2(inner, 60f));
 
-        Text title = MakeText(card.transform, "Title", choices[index].Title, 46, DisplayFont);
-        Place(title.rectTransform, new Vector2(0f, 60f), new Vector2(420f, 100f));
+        Text title = MakeText(card.transform, "Title", choices[index].Title, roomy ? 46 : 34, DisplayFont);
+        Place(title.rectTransform, new Vector2(0f, top - 120f), new Vector2(inner, 80f));
 
-        Text body = MakeText(card.transform, "Body", choices[index].Description, 28, BodyFont);
+        Text body = MakeText(card.transform, "Body", choices[index].Description, roomy ? 28 : 22, BodyFont);
         body.color = new Color(0.82f, 0.82f, 0.86f);
-        Place(body.rectTransform, new Vector2(0f, -70f), new Vector2(400f, 200f));
+        Place(body.rectTransform, new Vector2(0f, roomy ? -70f : -20f), new Vector2(inner - 20f, roomy ? 200f : 140f));
 
         int taken = upgrades.TimesTaken(choices[index].Id);
         if (taken > 0)
         {
-            Text stacks = MakeText(card.transform, "Stacks", $"already taken {taken}x", 24, BodyFont);
+            Text stacks = MakeText(card.transform, "Stacks", $"already taken {taken}x", roomy ? 24 : 20, BodyFont);
             stacks.color = new Color(0.55f, 0.55f, 0.6f);
-            Place(stacks.rectTransform, new Vector2(0f, -175f), new Vector2(400f, 50f));
+            Place(stacks.rectTransform, new Vector2(0f, -top + 35f), new Vector2(inner, 45f));
         }
     }
 

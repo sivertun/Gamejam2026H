@@ -65,6 +65,24 @@ public static class UpgradePool
             },
             new Upgrade
             {
+                Id = "tuck_and_roll",
+                Title = "Tuck and Roll",
+                Description = "Shift to roll, untouchable while you go. Again for a shorter wait " +
+                              "and a longer window.",
+                MaxTimes = 3,
+                Apply = u =>
+                {
+                    // The first one unlocks it, the rest sharpen it
+                    if (u.hasDodgeRoll)
+                    {
+                        u.dodgeCooldown *= 0.7f;
+                        u.dodgeInvulnerability += 0.1f;
+                    }
+                    u.hasDodgeRoll = true;
+                },
+            },
+            new Upgrade
+            {
                 Id = "vacuum_burst",
                 Title = "Vacuum Burst",
                 Description = "Press Q to swallow everything around you at once. Long cooldown.",
@@ -79,7 +97,7 @@ public static class UpgradePool
         };
     }
 
-    // Three at random that you haven't already maxed out
+    // Three at random that you haven't already maxed out, or the whole pool while testing
     public static List<Upgrade> Offer(PlayerUpgrades upgrades, int count)
     {
         List<Upgrade> available = new List<Upgrade>();
@@ -87,6 +105,9 @@ public static class UpgradePool
         {
             if (upgrades == null || upgrades.TimesTaken(upgrade.Id) < upgrade.MaxTimes) available.Add(upgrade);
         }
+
+        // Testing: every upgrade on screen at once, so you can go straight to the one you want
+        if (upgrades != null && upgrades.offerEveryUpgrade) return available;
 
         List<Upgrade> chosen = new List<Upgrade>();
         while (chosen.Count < count && available.Count > 0)

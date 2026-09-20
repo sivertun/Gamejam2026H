@@ -7,6 +7,7 @@ public class CharacterAnimator : MonoBehaviour
 {
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int AttackHash = Animator.StringToHash("Attack");
+    private static readonly int RollHash = Animator.StringToHash("Roll");
 
     [SerializeField] private Animator animator;
     [Tooltip("Seconds to smooth the walk/idle blend")]
@@ -36,6 +37,12 @@ public class CharacterAnimator : MonoBehaviour
     {
         if (animator == null) return;
         animator.SetFloat(SpeedHash, speed, speedDampTime, Time.deltaTime);
+    }
+
+    public void PlayRoll()
+    {
+        if (animator == null) return;
+        animator.SetTrigger(RollHash);
     }
 
     public void PlayAttack()

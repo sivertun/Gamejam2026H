@@ -198,6 +198,12 @@ public class LanternController : MonoBehaviour, IDamagable
         }
     }
 
+    // Used by the dodge roll: nothing can touch you for this long
+    public void GrantInvincibility(float seconds)
+    {
+        invincibilityTimer = Mathf.Max(invincibilityTimer, seconds);
+    }
+
     public void TakeDamage(float damage, float knockback, Transform source)
     {
         if (invincibilityTimer != 0) return;

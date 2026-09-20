@@ -19,11 +19,13 @@ public class MeleeAttack : MonoBehaviour
     private float cooldownTimer;
     private CharacterAnimator characterAnimator;
     private LampSuck lampSuck;
+    private PlayerMovement movement;
 
     void Awake()
     {
         characterAnimator = GetComponent<CharacterAnimator>();
         lampSuck = GetComponent<LampSuck>();
+        movement = GetComponent<PlayerMovement>();
     }
 
     void Update()
@@ -42,6 +44,7 @@ public class MeleeAttack : MonoBehaviour
         if (cooldownTimer != 0) return;
         // Both hands are busy holding the lamp up
         if (lampSuck != null && lampSuck.IsSucking) return;
+        if (movement != null && movement.IsDodging) return;
         if (UpgradeChooser.IsChoosing) return;
 
         if (characterAnimator != null) characterAnimator.PlayAttack();

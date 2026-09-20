@@ -25,11 +25,23 @@ public class PlayerUpgrades : MonoBehaviour
     [Tooltip("Damage a second the beam does to living enemies. 0 = the beam doesn't hurt them")]
     public float suckDamagePerSecond = 0f;
 
+    [Header("Dodge roll")]
+    [Tooltip("Whether shift rolls at all")]
+    public bool hasDodgeRoll = false;
+    [Tooltip("Seconds between rolls")]
+    public float dodgeCooldown = 3f;
+    [Tooltip("Seconds you can't be touched for once a roll starts")]
+    public float dodgeInvulnerability = 0.4f;
+
     [Header("Vacuum burst")]
     [Tooltip("Whether the burst is unlocked at all")]
     public bool hasInstantSuck = false;
     [Tooltip("Seconds between bursts")]
     public float instantSuckCooldown = 20f;
+
+    [Header("Testing")]
+    [Tooltip("Offer the whole pool at once instead of three at random. Turn off for a real run.")]
+    public bool offerEveryUpgrade = true;
 
     // How many times each upgrade has been taken, so the pool stops offering ones that are maxed
     private readonly Dictionary<string, int> timesTaken = new Dictionary<string, int>();

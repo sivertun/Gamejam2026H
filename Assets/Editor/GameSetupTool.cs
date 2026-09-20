@@ -47,6 +47,8 @@ public static class GameSetupTool
     private const float EnemyFitHeight = 2.1f;
     // How long the swing takes in game, whatever the clip length is
     private const float PlayerAttackDuration = 0.9f;
+    // The roll clip is sped up to land in this long, matching PlayerDodge's dodgeDuration
+    private const float PlayerRollDuration = 0.6f;
     private const float EnemyAttackDuration = 0.8f;
 
     private const float MapRadius = 110f;
@@ -68,9 +70,10 @@ public static class GameSetupTool
         AnimationClip walk = LoadClip(AnimFolder + "/player_walk.anim");
         AnimationClip swing = LoadClip(AnimFolder + "/player_swing.anim");
         AnimationClip sneak = LoadClip(AnimFolder + "/enemy_sneak.anim");
+        AnimationClip roll = LoadClip(AnimFolder + "/player_roll.anim");
         GameObject playerModel = AssetDatabase.LoadAssetAtPath<GameObject>(PlayerModelPath);
         GameObject enemyModel = AssetDatabase.LoadAssetAtPath<GameObject>(EnemyModelPath);
-        if (idle == null || walk == null || swing == null || sneak == null || playerModel == null || enemyModel == null)
+        if (idle == null || walk == null || swing == null || sneak == null || roll == null || playerModel == null || enemyModel == null)
         {
             Debug.LogError("[GameSetup] Missing animation clips or models, see errors above. Nothing changed.");
             return;
@@ -79,12 +82,12 @@ public static class GameSetupTool
         AvatarMask upperBody = CreateUpperBodyMask();
 
         float playerSpeed = ReadMaxSpeed(PlayerPrefabPath, PlayerCharacterName, 5f);
-        AnimatorController playerController = BuildController(PlayerControllerPath, idle, walk, swing, playerSpeed, PlayerAttackDuration, upperBody);
+        AnimatorController playerController = BuildController(PlayerControllerPath, idle, walk, swing, playerSpeed, PlayerAttackDuration, upperBody, roll);
         SetupCharacter(PlayerPrefabPath, PlayerCharacterName, playerModel, playerController, PlayerFitHeight);
 
         // All rigs are humanoid, so the enemy can reuse the player's idle and swing
         float enemySpeed = ReadMaxSpeed(EnemyPrefabPaths[0], null, 3f);
-        AnimatorController enemyController = BuildController(EnemyControllerPath, idle, sneak, swing, enemySpeed, EnemyAttackDuration, upperBody);
+        AnimatorController enemyController = BuildController(EnemyControllerPath, idle, sneak, swing, enemySpeed, EnemyAttackDuration, upperBody, null);
         foreach (string enemyPath in EnemyPrefabPaths)
         {
             SetupCharacter(enemyPath, null, enemyModel, enemyController, EnemyFitHeight);
@@ -165,7 +168,7 @@ public static class GameSetupTool
     // Base layer: idle <-> walk blended by the "Speed" float.
     // Attack layer (upper body only, so legs keep walking): plays the swing on the "Attack" trigger.
     private static AnimatorController BuildController(string path, AnimationClip idle, AnimationClip walk, AnimationClip attack,
-        float walkSpeed, float attackDuration, AvatarMask upperBody)
+        float walkSpeed, float attackDuration, AvatarMask upperBody, AnimationClip roll)
     {
         AssetDatabase.DeleteAsset(path);
         AnimatorController controller = AnimatorController.CreateAnimatorControllerAtPath(path);
@@ -177,6 +180,10 @@ public static class GameSetupTool
         tree.useAutomaticThresholds = false;
         tree.AddChild(idle, 0f);
         tree.AddChild(walk, Mathf.Max(walkSpeed, 0.1f));
+
+        // The roll is a whole-body move, so it lives on the base layer next to the walk rather
+        // than on the upper-body attack layer
+        if (roll != null) AddRoll(controller, roll);
 
         var attackMachine = new AnimatorStateMachine { name = "Attack", hideFlags = HideFlags.HideInHierarchy };
         AssetDatabase.AddObjectToAsset(attackMachine, controller);
@@ -208,6 +215,30 @@ public static class GameSetupTool
 
         EditorUtility.SetDirty(controller);
         return controller;
+    }
+
+    private static void AddRoll(AnimatorController controller, AnimationClip roll)
+    {
+        controller.AddParameter("Roll", AnimatorControllerParameterType.Trigger);
+
+        AnimatorStateMachine baseMachine = controller.layers[0].stateMachine;
+        AnimatorState locomotion = baseMachine.defaultState;
+
+        AnimatorState rollState = baseMachine.AddState("Roll");
+        rollState.motion = roll;
+        rollState.speed = roll.length / PlayerRollDuration;
+
+        AnimatorStateTransition start = baseMachine.AddAnyStateTransition(rollState);
+        start.AddCondition(AnimatorConditionMode.If, 0, "Roll");
+        start.hasExitTime = false;
+        start.duration = 0.05f;
+        // A roll can't cancel into itself, PlayerDodge's cooldown owns that
+        start.canTransitionToSelf = false;
+
+        AnimatorStateTransition end = rollState.AddTransition(locomotion);
+        end.hasExitTime = true;
+        end.exitTime = 0.9f;
+        end.duration = 0.1f;
     }
 
     private static float ReadMaxSpeed(string prefabPath, string characterName, float fallback)
