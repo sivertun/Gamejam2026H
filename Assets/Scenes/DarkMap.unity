@@ -22242,6 +22242,10 @@ PrefabInstance:
       propertyPath: spawnRate
       value: 0.05
       objectReference: {fileID: 0}
+    - target: {fileID: 425868772439290823, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+      propertyPath: ratePerStage
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 5697842136816540481, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: m_Name
       value: Player
@@ -22250,9 +22254,17 @@ PrefabInstance:
       propertyPath: spawnRate
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 5816369402814378322, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+      propertyPath: ratePerStage
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 6635262824883437989, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: spawnRate
       value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 6635262824883437989, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+      propertyPath: ratePerStage
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 8209145499965774042, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: m_LocalPosition.x
@@ -29474,6 +29486,7 @@ GameObject:
   m_Component:
   - component: {fileID: 656449009}
   - component: {fileID: 656449010}
+  - component: {fileID: 656449011}
   m_Layer: 0
   m_Name: ClearingGlow
   m_TagString: Untagged
@@ -29561,6 +29574,35 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!114 &656449011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 656449008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1001 &656993848
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -54373,6 +54415,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1240654421}
   - component: {fileID: 1240654422}
+  - component: {fileID: 1240654423}
   m_Layer: 0
   m_Name: ClearingGlow
   m_TagString: Untagged
@@ -54460,6 +54503,35 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!114 &1240654423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1240654420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1 &1244609454
 GameObject:
   m_ObjectHideFlags: 0
@@ -77235,6 +77307,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1751086523}
   - component: {fileID: 1751086524}
+  - component: {fileID: 1751086525}
   m_Layer: 0
   m_Name: ClearingGlow
   m_TagString: Untagged
@@ -77322,6 +77395,35 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!114 &1751086525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1751086522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1001 &1751099100
 PrefabInstance:
   m_ObjectHideFlags: 0
