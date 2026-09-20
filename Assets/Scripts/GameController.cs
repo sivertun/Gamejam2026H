@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private EnemySpawner basicSpawn;
     [SerializeField] private EnemySpawner runSpawn;
     [SerializeField] private EnemySpawner forSpawn;
+    [SerializeField] private GameObject text;
 
     bool started = false;
 
@@ -21,6 +22,7 @@ public class GameController : MonoBehaviour
     {
         player.enabled = false;
         menuUI.SetActive(true);
+        text.SetActive(true);
     }
 
     void Update()
@@ -28,6 +30,7 @@ public class GameController : MonoBehaviour
         if (!started && AnyInputPressed())
         {
             started = true;
+            text.SetActive(false);
             StartCoroutine(SlideMenuUpThenStart());
             cameraMovement.BeginTransition();
         }
