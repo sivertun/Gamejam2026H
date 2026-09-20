@@ -80,8 +80,6 @@ public class LampSuck : MonoBehaviour
     // Colour comes from the lantern, which eases it across when you reach a new light stage
     private Color LampColor => lantern != null ? lantern.CurrentColor : lightColor;
 
-    // Dims as the last of the light goes, on top of the lamp shrinking
-    private float Brightness => lantern != null ? lantern.LightBrightness : 1f;
 
     // How far the lamp reaches right now
     public float Range => range * Growth;
@@ -288,7 +286,6 @@ public class LampSuck : MonoBehaviour
         float t = Mathf.SmoothStep(0f, 1f, beamAmount);
 
         float flicker = 1f + (Mathf.PerlinNoise(Time.time * flickerSpeed, 0f) * 2f - 1f) * flickerAmount;
-        flicker *= Brightness;
         float growth = Growth;
         float radius = circleRadius * growth;
         // Light fades with distance squared, so a beam twice as long needs four times the intensity
@@ -296,7 +293,11 @@ public class LampSuck : MonoBehaviour
 
         // Work out the circle light from the radius you want: spot angle from height and radius,
         // intensity scaled by distance squared so brightness doesn't depend on height
-        Vector3 circlePosition = new Vector3(0f, circleHeight, 0f);
+        // Hang the light higher as it grows. Widening the cone alone does nothing, because the
+        // ground still falls off with distance squared, so the lit circle stayed the same size
+        // however big the lantern got. Raising it scales the whole circle: the cone angle stays
+        // put, groundDistance grows, and the intensity below grows with its square to match.
+        Vector3 circlePosition = new Vector3(0f, circleHeight * growth, 0f);
         float groundDistance = GroundDistance(transform.TransformPoint(circlePosition));
         float circleAngle = Mathf.Min(2f * Mathf.Atan2(radius, groundDistance) * Mathf.Rad2Deg, 179f);
         float circleIntensity = circleBrightness * groundDistance * groundDistance;

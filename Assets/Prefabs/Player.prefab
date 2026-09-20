@@ -217,7 +217,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7297999659175775112}
-  - {fileID: 6977648740387403074}
   - {fileID: 3867575429036592357}
   - {fileID: 3465709328416590109}
   - {fileID: 4375943029836265962}
@@ -407,7 +406,7 @@ MonoBehaviour:
   lightColor: {r: 1, g: 0.78, b: 0.35, a: 1}
   transitionTime: 0.3
   circleRadius: 8
-  circleBrightness: 5
+  circleBrightness: 10
   circleHeight: 3
   circleEdgeHardness: 0.6
   lightIntensity: 40
@@ -979,75 +978,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &8899873470089148263
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6977648740387403074}
-  - component: {fileID: 345852835544073635}
-  m_Layer: 0
-  m_Name: LampSuck
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6977648740387403074
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8899873470089148263}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.00046014786, y: 1.55, z: -0.000060081482}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7965918266667472758}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &345852835544073635
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8899873470089148263}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0c05c00508ba4a33a67866be995e1d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LampSuck
-  range: 6
-  suckAngle: 30
-  pullSpeed: 6
-  absorbDistance: 1
-  blockingLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  lampLight: {fileID: 0}
-  lightColor: {r: 1, g: 0.78, b: 0.35, a: 1}
-  transitionTime: 0.3
-  circleRadius: 8
-  circleBrightness: 5
-  circleHeight: 3
-  circleEdgeHardness: 0.6
-  lightIntensity: 40
-  beamAngle: 90
-  beamTilt: 25
-  beamRangeMultiplier: 2
-  lightOffset: {x: 0, y: 0.3, z: 0.7}
-  beamEdgeHardness: 0.5
-  playerRenderingLayer: 7
-  flickerAmount: 0.12
-  flickerSpeed: 3
-  particleFields: []
-  suckAction: {fileID: 0}
 --- !u!1001 &3753577637570914652
 PrefabInstance:
   m_ObjectHideFlags: 0

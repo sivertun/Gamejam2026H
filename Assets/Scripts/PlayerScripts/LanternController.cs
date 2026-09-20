@@ -6,18 +6,17 @@ public class LanternController : MonoBehaviour, IDamagable
     [SerializeField] private float invincibilityTime;
     private float invincibilityTimer;
     [SerializeField] private float decayPerSec = 0.01f;
-    [Tooltip("Light lost every time you get hit, whatever hit you. 1 = a whole light stage")]
-    [SerializeField] private float lightLostPerHit = 0.0625f;
+    [Tooltip("Light lost every time you get hit, on top of the share below")]
+    [SerializeField] private float lightLostPerHit = 0.04f;
+    [Tooltip("Share of the light you're carrying that each hit takes. 0.18 = 18% of it")]
+    [SerializeField, Range(0f, 1f)] private float shareLostPerHit = 0.18f;
     [Tooltip("Light the lantern starts the game with")]
     [SerializeField] private float startLightLevel = 0.2f;
 
     [Header("How far the light reaches")]
-    [Tooltip("Smallest the light shrinks to when it's nearly out, against its starting size")]
-    [SerializeField] private float minGrowth = 0.8f;
-    [Tooltip("Largest the light ever grows to, against its starting size")]
-    [SerializeField] private float maxGrowth = 4f;
-    [Tooltip("Light level at which it reaches its largest. Light stage 5 is at 4")]
-    [SerializeField] private float lightForMaxGrowth = 4f;
+    [Tooltip("How sharply size follows the light. 0.5 is a square root: four times the light is " +
+             "twice the reach. Lower is flatter, 1 is straight through.")]
+    [SerializeField, Range(0.2f, 1f)] private float growthPower = 0.5f;
 
     [Header("Stage colours")]
     [Tooltip("Colour of the light at each stage. The first one is what you start the game with")]
@@ -76,26 +75,17 @@ public class LanternController : MonoBehaviour, IDamagable
     // What TotalLight is at the very start of the game, so others can size themselves against it
     public float StartLight => startLightLevel;
 
-    // How big the light is against the start of the game. Drives this lantern's own range and
-    // everything the lamp does, see LampSuck, so all of it grows and shrinks as one.
+    // How big the light is against the start of the game, and the only thing the lamp reads.
+    // It answers to every bit of light, with no floor and no ceiling: there is nowhere on the
+    // curve where gaining or losing light does nothing, so every hit shows up on screen.
     public float LightGrowth
     {
         get
         {
             if (startLightLevel <= 0f) return 1f;
-            float light = TotalLight;
-
-            // A starting lantern gives exactly the tuned sizes. Below that the darkness closes in
-            // on you, above it the light opens out but levels off.
-            if (light < startLightLevel) return Mathf.Lerp(minGrowth, 1f, Mathf.Clamp01(light / startLightLevel));
-            return Mathf.Lerp(1f, maxGrowth,
-                Mathf.InverseLerp(startLightLevel, Mathf.Max(lightForMaxGrowth, startLightLevel + 0.01f), light));
+            return Mathf.Pow(Mathf.Max(TotalLight, 0f) / startLightLevel, growthPower);
         }
     }
-
-    // How brightly the light burns, 1 while you're healthy and fading to 0 as the last of it goes.
-    // Growth handles getting bigger, this only ever dims, so the two never fight each other.
-    public float LightBrightness => startLightLevel > 0f ? Mathf.Clamp01(TotalLight / startLightLevel) : 1f;
 
     // The colour the light is right now, easing across when you reach a new stage
     public Color CurrentColor
@@ -194,8 +184,10 @@ public class LanternController : MonoBehaviour, IDamagable
         if (invincibilityTimer != 0) return;
         invincibilityTimer = invincibilityTime;
 
-        // Every hit costs the same, however hard it hit, so the cost is easy to read while playing
-        DowngradeLightLevel(lightLostPerHit);
+        // Part flat, part a share of what you're carrying. The share is what makes a hit read the
+        // same whether you're rich or poor in light: a flat cost alone is invisible when you have
+        // plenty, so you'd feel untouchable right up until the last couple of hits killed you.
+        DowngradeLightLevel(lightLostPerHit + lightLevel * shareLostPerHit);
 
         Vector3 heading = transform.position - source.position;
         Vector3 direction = heading.normalized;
