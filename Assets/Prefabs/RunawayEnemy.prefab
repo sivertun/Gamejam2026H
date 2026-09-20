@@ -37,7 +37,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3446941439895226750}
+  - {fileID: 664445384093271299}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4990953909128698312
@@ -212,9 +212,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c49a4e11271ae453dad15a46b3b255c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterAnimator
-  animator: {fileID: 8734118149847945988}
+  animator: {fileID: 6906473828914487161}
   speedDampTime: 0.1
---- !u!1001 &2909122531199430293
+--- !u!1001 &1058958284796093160
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -299,13 +299,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8e6daa28cb958bf4dab493001a5d444e, type: 3}
---- !u!4 &3446941439895226750 stripped
+--- !u!4 &664445384093271299 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8e6daa28cb958bf4dab493001a5d444e, type: 3}
-  m_PrefabInstance: {fileID: 2909122531199430293}
+  m_PrefabInstance: {fileID: 1058958284796093160}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &8734118149847945988 stripped
+--- !u!95 &6906473828914487161 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 8e6daa28cb958bf4dab493001a5d444e, type: 3}
-  m_PrefabInstance: {fileID: 2909122531199430293}
+  m_PrefabInstance: {fileID: 1058958284796093160}
   m_PrefabAsset: {fileID: 0}
