@@ -22350,8 +22350,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-<<<<<<< HEAD
-=======
     - target: {fileID: 425868772439290823, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: spawnRate
       value: 0.05
@@ -22360,13 +22358,10 @@ PrefabInstance:
       propertyPath: ratePerStage
       value: 0.2
       objectReference: {fileID: 0}
->>>>>>> 3b561a5defd7fdbe1ad43cb90f74c659a24c6a9d
     - target: {fileID: 5697842136816540481, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-<<<<<<< HEAD
-=======
     - target: {fileID: 5816369402814378322, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: spawnRate
       value: 0.1
@@ -22383,7 +22378,6 @@ PrefabInstance:
       propertyPath: ratePerStage
       value: 0.2
       objectReference: {fileID: 0}
->>>>>>> 3b561a5defd7fdbe1ad43cb90f74c659a24c6a9d
     - target: {fileID: 8209145499965774042, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

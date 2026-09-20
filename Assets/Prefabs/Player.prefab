@@ -414,12 +414,9 @@ MonoBehaviour:
   pullSpeed: 6
   absorbDistance: 1
   grabWidth: 1.5
-<<<<<<< HEAD
-=======
   burnMaterial: {fileID: 2100000, guid: e6cf44fb3ef702b4799de9ef1cf58982, type: 2}
   burstDuration: 1.5
   burstPullMultiplier: 2.5
->>>>>>> 3b561a5defd7fdbe1ad43cb90f74c659a24c6a9d
   blockingLayers:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -1024,11 +1021,7 @@ PrefabInstance:
       objectReference: {fileID: 4888267710888591229}
     - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
       propertyPath: ratePerStage
-<<<<<<< HEAD
-      value: 0.1
-=======
       value: 0.2
->>>>>>> 3b561a5defd7fdbe1ad43cb90f74c659a24c6a9d
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1129,11 +1122,7 @@ PrefabInstance:
       objectReference: {fileID: 4888267710888591229}
     - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
       propertyPath: ratePerStage
-<<<<<<< HEAD
-      value: 0.06
-=======
       value: 0.2
->>>>>>> 3b561a5defd7fdbe1ad43cb90f74c659a24c6a9d
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1309,11 +1298,7 @@ PrefabInstance:
       objectReference: {fileID: 4888267710888591229}
     - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
       propertyPath: ratePerStage
-<<<<<<< HEAD
-      value: 0.08
-=======
       value: 0.2
->>>>>>> 3b561a5defd7fdbe1ad43cb90f74c659a24c6a9d
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
