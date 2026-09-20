@@ -40,8 +40,8 @@ public class PlayerUpgrades : MonoBehaviour
     public float instantSuckCooldown = 20f;
 
     [Header("Testing")]
-    [Tooltip("Offer the whole pool at once instead of three at random. Turn off for a real run.")]
-    public bool offerEveryUpgrade = true;
+    [Tooltip("Offer the whole pool at once instead of three at random. Only for trying things out.")]
+    public bool offerEveryUpgrade = false;
 
     // How many times each upgrade has been taken, so the pool stops offering ones that are maxed
     private readonly Dictionary<string, int> timesTaken = new Dictionary<string, int>();

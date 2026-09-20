@@ -406,8 +406,8 @@ MonoBehaviour:
     m_Bits: 4294967295
   lampLight: {fileID: 0}
   burnMaterial: {fileID: 2100000, guid: e6cf44fb3ef702b4799de9ef1cf58982, type: 2}
-  burstDuration: 0.9
-  burstPullMultiplier: 6
+  burstDuration: 1.5
+  burstPullMultiplier: 2.5
   lightColor: {r: 1, g: 0.78, b: 0.35, a: 1}
   transitionTime: 0.3
   circleRadius: 8
@@ -1371,8 +1371,12 @@ MonoBehaviour:
   suckMoveSpeed: 0.45
   enemyLightMultiplier: 1
   suckDamagePerSecond: 0
+  hasDodgeRoll: 0
+  dodgeCooldown: 3
+  dodgeInvulnerability: 0.4
   hasInstantSuck: 0
   instantSuckCooldown: 20
+  offerEveryUpgrade: 0
 --- !u!114 &4783011412917142100
 MonoBehaviour:
   m_ObjectHideFlags: 0

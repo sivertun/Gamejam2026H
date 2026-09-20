@@ -19,9 +19,9 @@ public class LampSuck : MonoBehaviour
     [Tooltip("Material for the fire Withering Light leaves on enemies. CustomAssets/Materials/ParticlesUnlit")]
     [SerializeField] private Material burnMaterial;
     [Tooltip("How long a Vacuum Burst keeps pulling, so you can watch things fly in")]
-    [SerializeField] private float burstDuration = 0.9f;
+    [SerializeField] private float burstDuration = 1.5f;
     [Tooltip("How much harder a burst pulls than holding the suck")]
-    [SerializeField] private float burstPullMultiplier = 6f;
+    [SerializeField] private float burstPullMultiplier = 2.5f;
     [Tooltip("Things that block sucking (e.g. trees). Leave as Everything to block on any collider.")]
     [SerializeField] private LayerMask blockingLayers = ~0;
 

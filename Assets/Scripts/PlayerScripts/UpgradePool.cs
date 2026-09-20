@@ -2,81 +2,60 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// One roguelite upgrade: what it's called, what the card says, and what it changes.
+// One roguelite upgrade: what it's called, what it does in a line, the actual numbers it moves,
+// and the change itself.
 public class Upgrade
 {
     public string Id;
     public string Title;
     public string Description;
+    // The numbers, read off what you already have: "range x1.35 -> x1.70"
+    public Func<PlayerUpgrades, string> Detail;
     public int MaxTimes = 3;
     public Action<PlayerUpgrades> Apply;
 }
 
 // Every upgrade you can be offered. All of them work on the lantern and the suck rather than the
 // melee swing: the swing's reach is already hard to read, so making it longer would only confuse.
+// Three at a time are drawn from this, so it wants more entries than that to stay interesting.
 public static class UpgradePool
 {
+    // Each step is used by both the card text and the change, so they can't drift apart
+    private const float BurnStep = 6f;
+    private const float CooldownCut = 0.7f;
+    private const float IFrameStep = 0.1f;
+
     public static List<Upgrade> All()
     {
         return new List<Upgrade>
         {
             new Upgrade
             {
-                Id = "long_reach",
-                Title = "Long Reach",
-                Description = "The lamp pulls from a third further out.",
-                Apply = u => u.rangeMultiplier += 0.35f,
-            },
-            new Upgrade
-            {
-                Id = "wide_draw",
-                Title = "Wide Draw",
-                Description = "The suck spreads 20 degrees wider, so you needn't aim so exactly.",
-                Apply = u => u.suckAngleBonus += 20f,
-            },
-            new Upgrade
-            {
-                Id = "hungry_flame",
-                Title = "Hungry Flame",
-                Description = "Fire flies in half again as fast, and bodies drain quicker.",
-                Apply = u => u.suckSpeedMultiplier += 0.5f,
-            },
-            new Upgrade
-            {
-                Id = "steady_hands",
-                Title = "Steady Hands",
-                Description = "You keep much more of your walking speed while holding the suck.",
-                MaxTimes = 3,
-                Apply = u => u.suckMoveSpeed = Mathf.Min(u.suckMoveSpeed + 0.18f, 1f),
-            },
-            new Upgrade
-            {
                 Id = "withering_light",
                 Title = "Withering Light",
-                Description = "The beam burns the living: enemies caught in it lose health.",
-                Apply = u => u.suckDamagePerSecond += 6f,
-            },
-            new Upgrade
-            {
-                Id = "rich_embers",
-                Title = "Rich Embers",
-                Description = "Draining a body gives half again as much light.",
-                Apply = u => u.enemyLightMultiplier += 0.5f,
+                Description = "The beam sets living enemies alight while you hold it on them.",
+                Detail = u => u.suckDamagePerSecond <= 0f
+                    ? $"unlocks it  ·  {BurnStep:0} damage a second"
+                    : $"burn {u.suckDamagePerSecond:0}  ->  {u.suckDamagePerSecond + BurnStep:0} damage a second",
+                Apply = u => u.suckDamagePerSecond += BurnStep,
             },
             new Upgrade
             {
                 Id = "tuck_and_roll",
                 Title = "Tuck and Roll",
-                Description = "Shift to roll, untouchable while you go. Again for a shorter wait " +
-                              "and a longer window.",
+                Description = "Shift rolls you clear. Nothing can touch you mid-roll.",
+                Detail = u => !u.hasDodgeRoll
+                    ? $"unlocks it  ·  {u.dodgeCooldown:0.0}s cooldown, {u.dodgeInvulnerability:0.00}s untouchable"
+                    : $"cooldown {u.dodgeCooldown:0.0}s -> {u.dodgeCooldown * CooldownCut:0.0}s  ·  " +
+                      $"untouchable {u.dodgeInvulnerability:0.00}s -> {u.dodgeInvulnerability + IFrameStep:0.00}s",
                 MaxTimes = 3,
                 Apply = u =>
                 {
                     // The first one unlocks it, the rest sharpen it
                     if (u.hasDodgeRoll)
                     {
-                        u.dodgeCooldown *= 0.7f;
-                        u.dodgeInvulnerability += 0.1f;
+                        u.dodgeCooldown *= CooldownCut;
+                        u.dodgeInvulnerability += IFrameStep;
                     }
                     u.hasDodgeRoll = true;
                 },
@@ -85,19 +64,22 @@ public static class UpgradePool
             {
                 Id = "vacuum_burst",
                 Title = "Vacuum Burst",
-                Description = "Press Q to swallow everything around you at once. Long cooldown.",
+                Description = "Q hauls in everything around you, from any direction.",
+                Detail = u => !u.hasInstantSuck
+                    ? $"unlocks it  ·  {u.instantSuckCooldown:0}s cooldown"
+                    : $"cooldown {u.instantSuckCooldown:0}s  ->  {u.instantSuckCooldown * CooldownCut:0}s",
                 MaxTimes = 3,
                 Apply = u =>
                 {
                     // The first one unlocks it, the rest cut the wait
-                    if (u.hasInstantSuck) u.instantSuckCooldown *= 0.7f;
+                    if (u.hasInstantSuck) u.instantSuckCooldown *= CooldownCut;
                     u.hasInstantSuck = true;
                 },
             },
         };
     }
 
-    // Three at random that you haven't already maxed out, or the whole pool while testing
+    // A handful at random that you haven't already maxed out, or the whole pool while testing
     public static List<Upgrade> Offer(PlayerUpgrades upgrades, int count)
     {
         List<Upgrade> available = new List<Upgrade>();

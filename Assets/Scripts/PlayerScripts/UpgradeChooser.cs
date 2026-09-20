@@ -18,12 +18,15 @@ public class UpgradeChooser : MonoBehaviour
         IsChoosing = false;
     }
 
+    // How many you get to pick between each time the lantern grows
+    private const int ChoicesPerStage = 3;
+
     public static void Offer(GameObject player)
     {
         if (IsChoosing || DeathSequence.IsDead) return;
 
         PlayerUpgrades upgrades = PlayerUpgrades.Ensure(player);
-        List<Upgrade> choices = UpgradePool.Offer(upgrades, 3);
+        List<Upgrade> choices = UpgradePool.Offer(upgrades, ChoicesPerStage);
         if (choices.Count == 0) return; // nothing left to offer
 
         UpgradeChooser chooser = new GameObject("UpgradeChooser").AddComponent<UpgradeChooser>();
@@ -138,25 +141,28 @@ public class UpgradeChooser : MonoBehaviour
 
         float inner = cardWidth - 60f;
         float top = cardHeight * 0.5f;
+        Upgrade upgrade = choices[index];
 
-        Text number = MakeText(card.transform, "Number", (index + 1).ToString(), roomy ? 44 : 34, BodyFont);
+        Text number = MakeText(card.transform, "Number", (index + 1).ToString(), roomy ? 44 : 32, BodyFont);
         number.color = new Color(1f, 0.72f, 0.35f);
-        Place(number.rectTransform, new Vector2(0f, top - 50f), new Vector2(inner, 60f));
+        Place(number.rectTransform, new Vector2(0f, top - (roomy ? 50f : 42f)), new Vector2(inner, 60f));
 
-        Text title = MakeText(card.transform, "Title", choices[index].Title, roomy ? 46 : 34, DisplayFont);
-        Place(title.rectTransform, new Vector2(0f, top - 120f), new Vector2(inner, 80f));
+        // The stack count rides on the title, which saves a line on the smaller cards
+        int taken = upgrades.TimesTaken(upgrade.Id);
+        string title = taken > 0 ? $"{upgrade.Title}  x{taken}" : upgrade.Title;
 
-        Text body = MakeText(card.transform, "Body", choices[index].Description, roomy ? 28 : 22, BodyFont);
+        Text titleText = MakeText(card.transform, "Title", title, roomy ? 44 : 32, DisplayFont);
+        Place(titleText.rectTransform, new Vector2(0f, top - (roomy ? 125f : 95f)), new Vector2(inner, 80f));
+
+        Text body = MakeText(card.transform, "Body", upgrade.Description, roomy ? 26 : 20, BodyFont);
         body.color = new Color(0.82f, 0.82f, 0.86f);
-        Place(body.rectTransform, new Vector2(0f, roomy ? -70f : -20f), new Vector2(inner - 20f, roomy ? 200f : 140f));
+        Place(body.rectTransform, new Vector2(0f, roomy ? 0f : -15f), new Vector2(inner - 20f, roomy ? 130f : 90f));
 
-        int taken = upgrades.TimesTaken(choices[index].Id);
-        if (taken > 0)
-        {
-            Text stacks = MakeText(card.transform, "Stacks", $"already taken {taken}x", roomy ? 24 : 20, BodyFont);
-            stacks.color = new Color(0.55f, 0.55f, 0.6f);
-            Place(stacks.rectTransform, new Vector2(0f, -top + 35f), new Vector2(inner, 45f));
-        }
+        // What it actually does to your numbers, which is the bit worth reading
+        string detail = upgrade.Detail != null ? upgrade.Detail(upgrades) : string.Empty;
+        Text detailText = MakeText(card.transform, "Detail", detail, roomy ? 24 : 18, BodyFont);
+        detailText.color = new Color(1f, 0.78f, 0.45f);
+        Place(detailText.rectTransform, new Vector2(0f, roomy ? -115f : -98f), new Vector2(inner - 10f, roomy ? 90f : 70f));
     }
 
     private static void Place(RectTransform rect, Vector2 position, Vector2 size)
