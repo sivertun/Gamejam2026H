@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour
     {
         player.enabled = false;
         menuUI.SetActive(true);
-        text.SetActive(true);
+        if (text) text.SetActive(true);
     }
 
     void Update()
@@ -30,7 +30,7 @@ public class GameController : MonoBehaviour
         if (!started && AnyInputPressed())
         {
             started = true;
-            text.SetActive(false);
+            if (text) text.SetActive(false);
             StartCoroutine(SlideMenuUpThenStart());
             cameraMovement.BeginTransition();
         }
@@ -52,8 +52,8 @@ public class GameController : MonoBehaviour
         Debug.Log("Slide stop");
         menuUI.transform.position = endPos;
         menuUI.SetActive(false);
-        basicSpawn.isActive = true;
-        forSpawn.isActive = true;
+        if(basicSpawn)basicSpawn.isActive = true;
+        if(forSpawn)forSpawn.isActive = true;
         if(runSpawn)runSpawn.isActive=true;
     }
 
