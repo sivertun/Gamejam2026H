@@ -589,6 +589,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc8f801660b4ab290a89790346ae24c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  invincibilityTime: 0
   maxHealth: 30
   deadPrefab: {fileID: 1588367899769044331, guid: 5f3373f39fe19696b9b263c0ae86aad9, type: 3}
 --- !u!4 &5978641984574626953
@@ -652,6 +653,7 @@ MonoBehaviour:
   maxSpeed: 6.5
   minSpeed: 4
   predictionAmount: 4
+  margin: 0.2
   slowdownDistance: 4
   smoothTime: 0.25
 --- !u!1660057539 &9223372036854775807

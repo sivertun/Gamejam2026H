@@ -11,7 +11,7 @@ public class AssassinEnemy : MonoBehaviour
     [SerializeField] private float minSpeed;
     private float currentSpeed;
     [SerializeField] private float predictionAmount;
-    private float margin = 0.1f;
+    [SerializeField] private float margin;
     [SerializeField] private float slowdownDistance;
     [SerializeField] private float smoothTime;
     private Vector3 velocity;
