@@ -144,7 +144,8 @@ public class LampSuck : MonoBehaviour
 
     void Update()
     {
-        bool sucking = action != null && action.IsPressed() && !UpgradeChooser.IsChoosing;
+        bool sucking = action != null && action.IsPressed()
+            && !UpgradeChooser.IsChoosing && !RescueSequence.IsRescued && !DeathSequence.IsDead;
         IsSucking = sucking;
 
         if (instantSuckTimer > 0f) instantSuckTimer = Mathf.Max(instantSuckTimer - Time.deltaTime, 0f);

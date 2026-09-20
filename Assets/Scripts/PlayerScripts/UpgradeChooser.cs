@@ -23,7 +23,7 @@ public class UpgradeChooser : MonoBehaviour
 
     public static void Offer(GameObject player)
     {
-        if (IsChoosing || DeathSequence.IsDead) return;
+        if (IsChoosing || DeathSequence.IsDead || RescueSequence.IsRescued) return;
 
         PlayerUpgrades upgrades = PlayerUpgrades.Ensure(player);
         List<Upgrade> choices = UpgradePool.Offer(upgrades, ChoicesPerStage);
