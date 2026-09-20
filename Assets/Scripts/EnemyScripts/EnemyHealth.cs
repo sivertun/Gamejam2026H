@@ -40,6 +40,10 @@ public class EnemyHealth : MonoBehaviour, IDamagable
     private void Die()
     {
         Destroy(gameObject);
-        Instantiate(deadPrefab, transform.position, transform.rotation);
+        GameObject dead = Instantiate(deadPrefab, transform.position, transform.rotation);
+
+        // Hand the model over so the corpse is the enemy itself, not a placeholder
+        Animator model = GetComponentInChildren<Animator>();
+        if (model != null && dead.TryGetComponent(out EnemyCorpse corpse)) corpse.TakeModel(model.transform);
     }
 }
