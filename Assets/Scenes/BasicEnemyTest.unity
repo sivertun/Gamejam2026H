@@ -385,6 +385,11 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &978120827 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5792060882196365255, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+  m_PrefabInstance: {fileID: 1226369344}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1226369344
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -413,6 +418,10 @@ PrefabInstance:
       propertyPath: spawnRate
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 6973134611896613761, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+      propertyPath: text
+      value: 
+      objectReference: {fileID: 978120827}
     - target: {fileID: 6973134611896613761, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: eSpawn
       value: 
