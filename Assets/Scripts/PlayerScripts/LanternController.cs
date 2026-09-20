@@ -41,7 +41,7 @@ public class LanternController : MonoBehaviour, IDamagable
     {
         if (lightLevel <= 0)
         {
-            gameController.dead();
+            if (gameController) gameController.dead();
             return true;
         }
         return false;

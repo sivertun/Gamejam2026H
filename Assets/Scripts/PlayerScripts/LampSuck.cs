@@ -53,12 +53,19 @@ public class LampSuck : MonoBehaviour
     [SerializeField, Range(0f, 0.5f)] private float flickerAmount = 0.12f;
     [SerializeField] private float flickerSpeed = 3f;
 
+    [Header("Particle Force Fields")]
+    [Tooltip("Force fields that pull enemy particles into the lamp (ParticleSucker). Found on the player automatically if left empty")]
+    [SerializeField] private ParticleSystemForceField[] particleFields;
+
     [Header("Input Actions")]
     public InputActionReference suckAction;
 
     private InputAction action;
     private float beamAmount; // 0 = circle, 1 = beam
     private float startRange;
+    private float[] particleFieldStartRanges;
+    private float[] particleFieldEndRanges;
+    private float largestParticleField;
 
     // How much the lamp has grown from absorbing fire (1 = starting size)
     private float Growth => startRange > 0f ? range / startRange : 1f;
@@ -81,6 +88,11 @@ public class LampSuck : MonoBehaviour
         ApplyLight();
     }
 
+    void Start()
+    {
+        SetupParticleFields();
+    }
+
     void OnEnable()
     {
         action?.Enable();
@@ -93,6 +105,7 @@ public class LampSuck : MonoBehaviour
         float step = transitionTime > 0f ? Time.deltaTime / transitionTime : 1f;
         beamAmount = Mathf.MoveTowards(beamAmount, sucking ? 1f : 0f, step);
         ApplyLight();
+        ApplyParticleFields();
 
         if (!sucking && !hasCalledComeback)
         {
@@ -129,7 +142,8 @@ public class LampSuck : MonoBehaviour
                 runawayEnemy.Runaway();
                 runawayenemies.Add(runawayEnemy);
             }
-            if (suckable == null) continue;
+            IDrainable drainable = collider.GetComponentInParent<IDrainable>();
+            if (suckable == null && drainable == null) continue;
 
             Transform target = collider.attachedRigidbody != null ? collider.attachedRigidbody.transform : collider.transform;
             if (!seen.Add(target)) continue;
@@ -137,6 +151,12 @@ public class LampSuck : MonoBehaviour
             Vector3 toTarget = target.position - origin;
             if (Vector3.Angle(transform.forward, toTarget) > halfAngle) continue;
             if (IsBlocked(origin, toTarget, target)) continue;
+
+            if (drainable != null)
+            {
+                drainable.OnDrain(this, Time.deltaTime);
+                continue;
+            }
 
             if (toTarget.magnitude <= absorbDistance)
             {
@@ -167,6 +187,40 @@ public class LampSuck : MonoBehaviour
     public void AddRange(float rangeBonus)
     {
         range += rangeBonus;
+    }
+
+    private void SetupParticleFields()
+    {
+        if (particleFields == null || particleFields.Length == 0)
+        {
+            // The sucker normally sits on the lantern, next to this object under the player
+            Transform player = transform.parent != null ? transform.parent : transform;
+            particleFields = player.GetComponentsInChildren<ParticleSystemForceField>(true);
+        }
+
+        particleFieldStartRanges = new float[particleFields.Length];
+        particleFieldEndRanges = new float[particleFields.Length];
+        for (int i = 0; i < particleFields.Length; i++)
+        {
+            particleFieldStartRanges[i] = particleFields[i].startRange;
+            particleFieldEndRanges[i] = particleFields[i].endRange;
+            largestParticleField = Mathf.Max(largestParticleField, particleFields[i].endRange);
+        }
+    }
+
+    // The biggest field reaches exactly as far as the suck does, smaller ones keep their proportions,
+    // so particles are pulled from as far as bodies can be drained and it all grows with the lamp
+    private void ApplyParticleFields()
+    {
+        if (particleFields == null || largestParticleField <= 0f) return;
+
+        float scale = range / largestParticleField;
+        for (int i = 0; i < particleFields.Length; i++)
+        {
+            if (particleFields[i] == null) continue;
+            particleFields[i].startRange = particleFieldStartRanges[i] * scale;
+            particleFields[i].endRange = particleFieldEndRanges[i] * scale;
+        }
     }
 
     private void SetupLight()

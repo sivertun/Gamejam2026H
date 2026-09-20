@@ -11,12 +11,19 @@ public class EnemyMeleeAttack : MonoBehaviour, IHasTarget
     [SerializeField] private float lifetime;
     [SerializeField] private float damage;
     [SerializeField] private float knockback;
+    [Tooltip("Seconds between the swing animation starting and the hitbox appearing")]
+    [SerializeField] private float hitDelay;
 
     [Header("Bit spaghetti but dont worry about it")]
     [SerializeField] private float playerWidth;
 
     private float cooldownTimer;
+    private CharacterAnimator characterAnimator;
 
+    void Awake()
+    {
+        characterAnimator = GetComponent<CharacterAnimator>();
+    }
 
     void Update()
     {
@@ -33,12 +40,19 @@ public class EnemyMeleeAttack : MonoBehaviour, IHasTarget
     {
         if (cooldownTimer != 0) return;
 
+        if (characterAnimator != null) characterAnimator.PlayAttack();
+        if (hitDelay > 0) Invoke(nameof(SpawnHitbox), hitDelay);
+        else SpawnHitbox();
+
+        cooldownTimer = cooldown;
+    }
+
+    private void SpawnHitbox()
+    {
         Vector3 hitboxPosition = transform.position + transform.rotation * hitboxOffset;
         GameObject hitbox = Instantiate(hitboxPrefab, hitboxPosition, transform.rotation, transform);
         Hitbox hitboxScript = hitbox.GetComponent<Hitbox>();
         hitboxScript.Initialize(gameObject, target, hitboxSize, damage, knockback, lifetime);
-
-        cooldownTimer = cooldown;
     }
 
     public void SetTarget(GameObject target)

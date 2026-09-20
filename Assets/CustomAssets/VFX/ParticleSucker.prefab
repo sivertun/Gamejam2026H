@@ -282,7 +282,7 @@ ParticleSystemForceField:
   m_Parameters:
     m_Shape: 0
     m_StartRange: 0
-    m_EndRange: 7.02
+    m_EndRange: 17.816883
     m_Length: 1
     m_GravityFocus: 0
     m_RotationRandomness: {x: 0, y: 0}

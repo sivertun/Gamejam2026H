@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2100000000000000005}
   - component: {fileID: 2100000000000000006}
   - component: {fileID: 2100000000000000007}
+  - component: {fileID: 2100000000000000008}
   m_Layer: 0
   m_Name: FirePickup
   m_TagString: Untagged
@@ -154,3 +155,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rangeBonus: 2
+--- !u!114 &2100000000000000008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2100000000000000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f1e5a9c3b2d4e6f8a0b1c2d3e4f5a61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particleMaterial: {fileID: 2100000, guid: e6cf44fb3ef702b4799de9ef1cf58982, type: 2}
