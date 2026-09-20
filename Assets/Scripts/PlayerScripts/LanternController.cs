@@ -15,6 +15,8 @@ public class LanternController : MonoBehaviour, IDamagable
     List<ILightStageObserver> observers = new List<ILightStageObserver>();
     private bool dead;
 
+    [SerializeField] private GameController gameController;
+
     void Awake()
     {
         lightObject = GetComponent<Light>();
@@ -39,6 +41,7 @@ public class LanternController : MonoBehaviour, IDamagable
     {
         if (lightLevel <= 0)
         {
+            gameController.dead();
             return true;
         }
         return false;
