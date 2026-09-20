@@ -43,8 +43,11 @@ public class LanternController : MonoBehaviour, IDamagable
 
     [SerializeField] private GameController gameController;
 
+    private PlayerAudio playerAudio;
+
     void Awake()
     {
+        playerAudio = PlayerAudio.Ensure(gameObject);
         lightLevel = startLightLevel;
         EnsureColors();
     }
@@ -65,6 +68,7 @@ public class LanternController : MonoBehaviour, IDamagable
         if (CheckLightDead() == true)
         {
             dead = true;
+            if (playerAudio != null) playerAudio.PlayDie();
             DeathSequence.Play();
         }
     }
@@ -208,6 +212,8 @@ public class LanternController : MonoBehaviour, IDamagable
     {
         if (invincibilityTimer != 0) return;
         invincibilityTimer = invincibilityTime;
+
+        if (playerAudio != null) playerAudio.PlayHurt();
 
         // Part flat, part a share of what you're carrying. The share is what makes a hit read the
         // same whether you're rich or poor in light: a flat cost alone is invisible when you have

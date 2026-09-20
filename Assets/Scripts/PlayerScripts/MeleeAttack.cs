@@ -20,12 +20,14 @@ public class MeleeAttack : MonoBehaviour
     private CharacterAnimator characterAnimator;
     private LampSuck lampSuck;
     private PlayerMovement movement;
+    private PlayerAudio playerAudio;
 
     void Awake()
     {
         characterAnimator = GetComponent<CharacterAnimator>();
         lampSuck = GetComponent<LampSuck>();
         movement = GetComponent<PlayerMovement>();
+        playerAudio = PlayerAudio.Ensure(gameObject);
     }
 
     void Update()
@@ -48,6 +50,7 @@ public class MeleeAttack : MonoBehaviour
         if (UpgradeChooser.IsChoosing) return;
 
         if (characterAnimator != null) characterAnimator.PlayAttack();
+        if (playerAudio != null) playerAudio.PlaySwing();
         if (hitDelay > 0) Invoke(nameof(SpawnHitbox), hitDelay);
         else SpawnHitbox();
 

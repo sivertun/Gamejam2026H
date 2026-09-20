@@ -84,6 +84,9 @@ public class LampSuck : MonoBehaviour
     // True while you're holding the suck, which slows your walk and stops you swinging
     public bool IsSucking { get; private set; }
 
+    // True while a Vacuum Burst is still hauling things in, which you aren't holding down
+    public bool IsBursting => burstTimer > 0f;
+
     // What the upgrades have made of the lamp, for anything being sucked to read
     public PlayerUpgrades Upgrades => upgrades;
     public float SuckSpeedMultiplier => upgrades != null ? upgrades.suckSpeedMultiplier : 1f;
