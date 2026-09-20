@@ -8,16 +8,20 @@ using UnityEngine.Rendering.Universal;
 public class LampSuck : MonoBehaviour
 {
     [Header("Suck")]
+    [Tooltip("How far the lamp reaches with a starting lantern. It grows and shrinks with the light")]
     [SerializeField] private float range = 6f;
     [Tooltip("Full angle of the area that sucks. Keep this narrower than the beam.")]
     [SerializeField, Range(1f, 120f)] private float suckAngle = 30f;
     [SerializeField] private float pullSpeed = 6f;
     [SerializeField] private float absorbDistance = 1f;
+    [Tooltip("Sideways room either side of the beam for grabbing things close to you, in units")]
+    [SerializeField] private float grabWidth = 1.5f;
     [Tooltip("Things that block sucking (e.g. trees). Leave as Everything to block on any collider.")]
     [SerializeField] private LayerMask blockingLayers = ~0;
 
     [Header("Lamp Light")]
     [SerializeField] private Light lampLight;
+    [Tooltip("Colour used when there's no lantern. With one, the lantern's stage colour wins")]
     [SerializeField] private Color lightColor = new Color(1f, 0.78f, 0.35f);
     [Tooltip("Seconds to morph between circle and beam")]
     [SerializeField] private float transitionTime = 0.3f;
@@ -57,21 +61,34 @@ public class LampSuck : MonoBehaviour
     [Tooltip("Force fields that pull enemy particles into the lamp (ParticleSucker). Found on the player automatically if left empty")]
     [SerializeField] private ParticleSystemForceField[] particleFields;
 
+    [Header("Lantern")]
+    [Tooltip("Lantern whose light sets the size of the lamp. Found on the player automatically if left empty")]
+    [SerializeField] private LanternController lantern;
+
     [Header("Input Actions")]
     public InputActionReference suckAction;
 
     private InputAction action;
     private float beamAmount; // 0 = circle, 1 = beam
-    private float startRange;
     private float[] particleFieldStartRanges;
     private float[] particleFieldEndRanges;
     private float largestParticleField;
 
-    // How much the lamp has grown from absorbing fire (1 = starting size)
-    private float Growth => startRange > 0f ? range / startRange : 1f;
+    // The lantern works out how big its light has grown, and the lamp simply follows it
+    private float Growth => lantern != null ? lantern.LightGrowth : 1f;
+
+    // Colour comes from the lantern, which eases it across when you reach a new light stage
+    private Color LampColor => lantern != null ? lantern.CurrentColor : lightColor;
+
+
+    // How far the lamp reaches right now
+    public float Range => range * Growth;
     private readonly HashSet<Transform> seen = new HashSet<Transform>();
 
     private Vector3 Origin => transform.TransformPoint(lightOffset);
+
+    // Where the lamp swallows things, used by drainables to fly their particles in
+    public Vector3 LampOrigin => Origin;
 
     private List<IRunawayEnemy> runawayenemies = new List<IRunawayEnemy>();
     private bool hasCalledComeback = false;
@@ -82,7 +99,9 @@ public class LampSuck : MonoBehaviour
         action = suckAction != null ? suckAction.action : InputSystem.actions?.FindAction("Player/Suck");
         if (action == null) Debug.LogWarning("LampSuck: no suck action assigned or found", this);
 
-        startRange = range;
+        if (lantern == null) lantern = GetComponentInParent<LanternController>();
+        if (lantern == null) Debug.LogWarning("LampSuck: no lantern found, the lamp will stay its starting size", this);
+
         SetupLight();
         ExcludePlayerFromLamp();
         ApplyLight();
@@ -131,7 +150,7 @@ public class LampSuck : MonoBehaviour
         float halfAngle = suckAngle * 0.5f;
         seen.Clear();
 
-        foreach (Collider collider in Physics.OverlapSphere(origin, range))
+        foreach (Collider collider in Physics.OverlapSphere(origin, Range))
         {
             if (collider.transform.IsChildOf(transform)) continue;
 
@@ -149,7 +168,13 @@ public class LampSuck : MonoBehaviour
             if (!seen.Add(target)) continue;
 
             Vector3 toTarget = target.position - origin;
-            if (Vector3.Angle(transform.forward, toTarget) > halfAngle) continue;
+            // Bodies drain wherever the beam lights them, pickups need the narrower suck cone
+            float allowedAngle = drainable != null ? beamAngle * 0.5f : halfAngle;
+            float angle = Vector3.Angle(transform.forward, toTarget);
+            // A fixed angle closes to nothing right in front of you, so something being pulled in
+            // would slip out of the cone just before it arrived. Allow a sideways wobble as well.
+            float sideways = Mathf.Sin(angle * Mathf.Deg2Rad) * toTarget.magnitude;
+            if (angle > allowedAngle && sideways > grabWidth) continue;
             if (IsBlocked(origin, toTarget, target)) continue;
 
             if (drainable != null)
@@ -183,12 +208,6 @@ public class LampSuck : MonoBehaviour
         return false;
     }
 
-    // Grows the suck range, and the beam and circle with it (see Growth in ApplyLight)
-    public void AddRange(float rangeBonus)
-    {
-        range += rangeBonus;
-    }
-
     private void SetupParticleFields()
     {
         if (particleFields == null || particleFields.Length == 0)
@@ -214,7 +233,7 @@ public class LampSuck : MonoBehaviour
     {
         if (particleFields == null || largestParticleField <= 0f) return;
 
-        float scale = range / largestParticleField;
+        float scale = Range / largestParticleField;
         for (int i = 0; i < particleFields.Length; i++)
         {
             if (particleFields[i] == null) continue;
@@ -232,6 +251,7 @@ public class LampSuck : MonoBehaviour
 
         lampLight = lightObject.AddComponent<Light>();
         lampLight.type = LightType.Spot;
+        lampLight.color = LampColor;
     }
 
     // Put the player's renderers on their own rendering layer and leave that layer out of the lamp,
@@ -273,7 +293,11 @@ public class LampSuck : MonoBehaviour
 
         // Work out the circle light from the radius you want: spot angle from height and radius,
         // intensity scaled by distance squared so brightness doesn't depend on height
-        Vector3 circlePosition = new Vector3(0f, circleHeight, 0f);
+        // Hang the light higher as it grows. Widening the cone alone does nothing, because the
+        // ground still falls off with distance squared, so the lit circle stayed the same size
+        // however big the lantern got. Raising it scales the whole circle: the cone angle stays
+        // put, groundDistance grows, and the intensity below grows with its square to match.
+        Vector3 circlePosition = new Vector3(0f, circleHeight * growth, 0f);
         float groundDistance = GroundDistance(transform.TransformPoint(circlePosition));
         float circleAngle = Mathf.Min(2f * Mathf.Atan2(radius, groundDistance) * Mathf.Rad2Deg, 179f);
         float circleIntensity = circleBrightness * groundDistance * groundDistance;
@@ -281,9 +305,9 @@ public class LampSuck : MonoBehaviour
 
         float angle = Mathf.Lerp(circleAngle, beamAngle, t);
 
-        lampLight.color = lightColor;
+        lampLight.color = LampColor;
         lampLight.intensity = Mathf.Lerp(circleIntensity, beamIntensity, t) * flicker;
-        lampLight.range = Mathf.Lerp(circleRange, range * beamRangeMultiplier, t);
+        lampLight.range = Mathf.Lerp(circleRange, Range * beamRangeMultiplier, t);
         lampLight.spotAngle = angle;
         lampLight.innerSpotAngle = Mathf.Lerp(1f, angle, Mathf.Lerp(circleEdgeHardness, beamEdgeHardness, t));
 
@@ -299,7 +323,7 @@ public class LampSuck : MonoBehaviour
     void OnDrawGizmos()
     {
         Vector3 origin = Origin;
-        Vector3 forward = transform.forward * range;
+        Vector3 forward = transform.forward * Range;
 
         // Suck area
         Gizmos.color = Color.red;

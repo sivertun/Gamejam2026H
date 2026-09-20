@@ -743,13 +743,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38f638584be441aa895a86d819fa8496, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DarkAtmosphere
-  ambientColor: {r: 0.07, g: 0.07, b: 0.1, a: 1}
+  ambientColor: {r: 0.17, g: 0.18, b: 0.24, a: 1}
   fogColor: {r: 0, g: 0, b: 0, a: 1}
-  fogDensity: 0.035
+  fogDensity: 0.02
   moonColor: {r: 0.45, g: 0.55, b: 0.85, a: 1}
-  moonIntensity: 0.2
-  exposure: 0.7
-  vignette: 0.4
+  moonIntensity: 0.5
+  exposure: 1
+  vignette: 0.32
   bloomIntensity: 1.2
   bloomThreshold: 0.8
   filmGrain: 0.3
