@@ -2,14 +2,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Light))]
-public class LanternController : MonoBehaviour
+public class LanternController : MonoBehaviour, IDamagable 
 {
+    [SerializeField] private float invincibilityTime;
+    private float invincibilityTimer;
     [SerializeField] private float decayPerSec = 0.01f;
     [SerializeField] private int maxLightIntensity = 30;
+    [SerializeField] private float damageLightLevelConversion = 0.01f;
     private int lightStage = 1;
     private float lightLevel = 0.2f;    
     private Light lightObject;
     List<ILightStageObserver> observers = new List<ILightStageObserver>();
+    private bool dead;
 
     void Awake()
     {
@@ -19,12 +23,15 @@ public class LanternController : MonoBehaviour
 
     void Update()
     {
+        if (dead) return;
+        if (invincibilityTimer != 0) invincibilityTimer = Mathf.Max(invincibilityTimer - Time.deltaTime, 0);
+
         lightLevel -= decayPerSec*Time.deltaTime;
         lightObject.intensity = lightLevel*maxLightIntensity;
         if (CheckLightDead() == true)
         {
-            // Lets kill the player!
-            print("TODO: Player died!");
+            dead = true;
+            DeathSequence.Play();
         }
     }
 
@@ -86,5 +93,18 @@ public class LanternController : MonoBehaviour
         {
             observer.OnLightStageUpgraded(newStage: lightStage);
         }
+    }
+
+    public void TakeDamage(float damage, float knockback, Transform source)
+    {
+        if (invincibilityTimer != 0) return;
+        invincibilityTimer = invincibilityTime;
+
+        lightLevel -= damage * damageLightLevelConversion;
+
+        Vector3 heading = transform.position - source.position;
+        Vector3 direction = heading.normalized;
+
+        gameObject.GetComponent<IHasVelocity>().SetVelocity(direction * knockback);
     }
 }

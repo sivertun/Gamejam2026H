@@ -2,5 +2,5 @@ using UnityEngine;
 
 public interface IHasTarget
 {
-    public void SetTarget(Transform target);
+    public void SetTarget(GameObject target);
 }

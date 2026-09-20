@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5382741026968030986}
   - component: {fileID: 8507123757033629816}
   - component: {fileID: -8167120308783136996}
+  - component: {fileID: -833010442809688488}
   m_Layer: 0
   m_Name: RunawayEnemy
   m_TagString: Untagged
@@ -70,7 +71,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 9875a245ac49007498213638a307faa1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -156,7 +157,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc8f801660b4ab290a89790346ae24c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  maxHealth: 30
+  invincibilityTime: 0.75
+  maxHealth: 15
   deadPrefab: {fileID: 1588367899769044331, guid: 5f3373f39fe19696b9b263c0ae86aad9, type: 3}
 --- !u!114 &-8167120308783136996
 MonoBehaviour:
@@ -171,5 +173,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyRunAwayFromLight
   target: {fileID: 0}
-  maxSpeed: 4
+  maxSpeed: 7
   smoothTime: 0.2
+--- !u!114 &-833010442809688488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8926503094524161111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c53855a80237e4738d993dd78050595, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMeleeAttack
+  target: {fileID: 0}
+  hitboxPrefab: {fileID: 6022441495539335349, guid: 69ac71afa56fd5395b23c43f9ff85f92, type: 3}
+  hitboxSize: {x: 1, y: 1, z: 0.5}
+  hitboxOffset: {x: 0, y: 0, z: 0.5}
+  preHitBuffer: 0.1
+  cooldown: 1
+  lifetime: 0.4
+  damage: 15
+  knockback: 25
+  playerWidth: 1
