@@ -414,13 +414,16 @@ MonoBehaviour:
   pullSpeed: 6
   absorbDistance: 1
   grabWidth: 1.5
+<<<<<<< HEAD
+=======
+  burnMaterial: {fileID: 2100000, guid: e6cf44fb3ef702b4799de9ef1cf58982, type: 2}
+  burstDuration: 1.5
+  burstPullMultiplier: 2.5
+>>>>>>> 3b561a5defd7fdbe1ad43cb90f74c659a24c6a9d
   blockingLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   lampLight: {fileID: 0}
-  burnMaterial: {fileID: 2100000, guid: e6cf44fb3ef702b4799de9ef1cf58982, type: 2}
-  burstDuration: 1.5
-  burstPullMultiplier: 2.5
   lightColor: {r: 1, g: 0.78, b: 0.35, a: 1}
   transitionTime: 0.3
   circleRadius: 8
@@ -439,6 +442,72 @@ MonoBehaviour:
   particleFields: []
   lantern: {fileID: 0}
   suckAction: {fileID: 0}
+  instantSuckKey: 31
+--- !u!114 &4783011412917142099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4888267710888591229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a7b1c9d5e2f48a6b8c0d1e2f3a4b5c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rangeMultiplier: 1
+  suckAngleBonus: 0
+  suckSpeedMultiplier: 1
+  suckMoveSpeed: 0.45
+  enemyLightMultiplier: 1
+  suckDamagePerSecond: 0
+  hasDodgeRoll: 0
+  dodgeCooldown: 3
+  dodgeInvulnerability: 0.4
+  hasInstantSuck: 0
+  instantSuckCooldown: 20
+  offerEveryUpgrade: 0
+--- !u!114 &4783011412917142100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4888267710888591229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d0e4f2a8b5c4ad9e1f3a4b5c6d7e8f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dodgeKey: 51
+  dodgeSpeed: 16
+  dodgeDuration: 0.6
+--- !u!114 &4783011412917142101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4888267710888591229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f2a6c4e0d7b4cf1a3b5c6d7e8f9a0b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swing: {fileID: 8300000, guid: 63958dcf356734c17acc46e8c4d6560e, type: 3}
+  hurt: {fileID: 8300000, guid: 26873a9c1b6cf4f0e88380a49f9932d3, type: 3}
+  die:
+  - {fileID: 8300000, guid: 7afc75b299c31452c94da38537ac32bd, type: 3}
+  - {fileID: 8300000, guid: ab613fd3756164aa5b5a65335423f8b3, type: 3}
+  footstep: {fileID: 8300000, guid: d3b54033ce1cf6a4b8a69c5422cc8341, type: 3}
+  suckLoop: {fileID: 8300000, guid: 8f4b1f67695e8472c83fa17fd571009d, type: 3}
+  swingVolume: 0.7
+  hurtVolume: 0.9
+  dieVolume: 1
+  footstepVolume: 0.35
+  suckVolume: 0.5
+  stepDistance: 2.2
+  pitchJitter: 0.12
 --- !u!114 &5984960774489288056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -955,7 +1024,11 @@ PrefabInstance:
       objectReference: {fileID: 4888267710888591229}
     - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
       propertyPath: ratePerStage
+<<<<<<< HEAD
       value: 0.1
+=======
+      value: 0.2
+>>>>>>> 3b561a5defd7fdbe1ad43cb90f74c659a24c6a9d
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1056,7 +1129,11 @@ PrefabInstance:
       objectReference: {fileID: 4888267710888591229}
     - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
       propertyPath: ratePerStage
+<<<<<<< HEAD
       value: 0.06
+=======
+      value: 0.2
+>>>>>>> 3b561a5defd7fdbe1ad43cb90f74c659a24c6a9d
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1232,7 +1309,11 @@ PrefabInstance:
       objectReference: {fileID: 4888267710888591229}
     - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
       propertyPath: ratePerStage
+<<<<<<< HEAD
       value: 0.08
+=======
+      value: 0.2
+>>>>>>> 3b561a5defd7fdbe1ad43cb90f74c659a24c6a9d
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1255,68 +1336,3 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 292679811867140161, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
   m_PrefabInstance: {fileID: 7009987763367635913}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4783011412917142099
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4888267710888591229}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a7b1c9d5e2f48a6b8c0d1e2f3a4b5c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rangeMultiplier: 1
-  suckAngleBonus: 0
-  suckSpeedMultiplier: 1
-  suckMoveSpeed: 0.45
-  enemyLightMultiplier: 1
-  suckDamagePerSecond: 0
-  hasDodgeRoll: 0
-  dodgeCooldown: 3
-  dodgeInvulnerability: 0.4
-  hasInstantSuck: 0
-  instantSuckCooldown: 20
-  offerEveryUpgrade: 0
---- !u!114 &4783011412917142100
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4888267710888591229}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d0e4f2a8b5c4ad9e1f3a4b5c6d7e8f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dodgeKey: 51
-  dodgeSpeed: 16
-  dodgeDuration: 0.6
---- !u!114 &4783011412917142101
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4888267710888591229}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f2a6c4e0d7b4cf1a3b5c6d7e8f9a0b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  swing: {fileID: 8300000, guid: 63958dcf356734c17acc46e8c4d6560e, type: 3}
-  hurt: {fileID: 8300000, guid: 26873a9c1b6cf4f0e88380a49f9932d3, type: 3}
-  die:
-  - {fileID: 8300000, guid: 7afc75b299c31452c94da38537ac32bd, type: 3}
-  - {fileID: 8300000, guid: ab613fd3756164aa5b5a65335423f8b3, type: 3}
-  footstep: {fileID: 8300000, guid: d3b54033ce1cf6a4b8a69c5422cc8341, type: 3}
-  suckLoop: {fileID: 8300000, guid: 8f4b1f67695e8472c83fa17fd571009d, type: 3}
-  swingVolume: 0.7
-  hurtVolume: 0.9
-  dieVolume: 1
-  footstepVolume: 0.35
-  suckVolume: 0.5
-  stepDistance: 2.2
-  pitchJitter: 0.12
