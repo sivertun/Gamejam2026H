@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Light))]
 public class LanternController : MonoBehaviour, IDamagable 
 {
     [SerializeField] private float invincibilityTime;
     private float invincibilityTimer;
     [SerializeField] private float decayPerSec = 0.01f;
-    [SerializeField] private int maxLightIntensity = 30;
     [Tooltip("Light lost every time you get hit, whatever hit you. 1 = a whole light stage")]
     [SerializeField] private float lightLostPerHit = 0.0625f;
     [Tooltip("Light the lantern starts the game with")]
@@ -20,10 +18,25 @@ public class LanternController : MonoBehaviour, IDamagable
     [SerializeField] private float maxGrowth = 4f;
     [Tooltip("Light level at which it reaches its largest. Light stage 5 is at 4")]
     [SerializeField] private float lightForMaxGrowth = 4f;
+
+    [Header("Stage colours")]
+    [Tooltip("Colour of the light at each stage. The first one is what you start the game with")]
+    [SerializeField] private Color[] stageColors =
+    {
+        new Color(1f, 0.78f, 0.35f),    // stage 1, the warm lamp you start with
+        new Color(0.68f, 0.85f, 0.9f),  // stage 2, light blue
+        new Color(1f, 0.71f, 0.76f),    // stage 3, light pink
+        new Color(0.56f, 0.93f, 0.56f), // stage 4, light green
+        Color.white,                    // stage 5
+    };
+    [Tooltip("Seconds the light takes to bleed from one stage's colour into the next")]
+    [SerializeField] private float colorTransitionTime = 1.5f;
     private int lightStage = 1;
-    private float lightLevel;
-    private Light lightObject;
-    private float startRange;
+    private float lightLevel = 0.2f;
+    private Color colorFrom;
+    private Color colorTo;
+    private float colorBlend = 1f;
+    private bool colorsReady;
     List<ILightStageObserver> observers = new List<ILightStageObserver>();
     private bool dead;
 
@@ -31,9 +44,8 @@ public class LanternController : MonoBehaviour, IDamagable
 
     void Awake()
     {
-        lightObject = GetComponent<Light>();
         lightLevel = startLightLevel;
-        startRange = lightObject.range;
+        EnsureColors();
     }
 
 
@@ -43,9 +55,12 @@ public class LanternController : MonoBehaviour, IDamagable
         if (invincibilityTimer != 0) invincibilityTimer = Mathf.Max(invincibilityTimer - Time.deltaTime, 0);
 
         lightLevel -= decayPerSec*Time.deltaTime;
-        // Brighter and further together, so a dying lantern lights less ground as well as less well
-        lightObject.intensity = TotalLight * maxLightIntensity;
-        lightObject.range = startRange * LightGrowth;
+
+        // Ease into a new stage's colour rather than snapping to it
+        colorBlend = colorTransitionTime > 0f
+            ? Mathf.MoveTowards(colorBlend, 1f, Time.deltaTime / colorTransitionTime)
+            : 1f;
+
         if (CheckLightDead() == true)
         {
             dead = true;
@@ -76,6 +91,33 @@ public class LanternController : MonoBehaviour, IDamagable
             return Mathf.Lerp(1f, maxGrowth,
                 Mathf.InverseLerp(startLightLevel, Mathf.Max(lightForMaxGrowth, startLightLevel + 0.01f), light));
         }
+    }
+
+    // How brightly the light burns, 1 while you're healthy and fading to 0 as the last of it goes.
+    // Growth handles getting bigger, this only ever dims, so the two never fight each other.
+    public float LightBrightness => startLightLevel > 0f ? Mathf.Clamp01(TotalLight / startLightLevel) : 1f;
+
+    // The colour the light is right now, easing across when you reach a new stage
+    public Color CurrentColor
+    {
+        get
+        {
+            EnsureColors();
+            return Color.Lerp(colorFrom, colorTo, Mathf.SmoothStep(0f, 1f, colorBlend));
+        }
+    }
+
+    private void EnsureColors()
+    {
+        if (colorsReady) return;
+        colorsReady = true;
+        colorFrom = colorTo = StageColor(lightStage);
+    }
+
+    private Color StageColor(int stage)
+    {
+        if (stageColors == null || stageColors.Length == 0) return Color.white;
+        return stageColors[Mathf.Clamp(stage - 1, 0, stageColors.Length - 1)];
     }
 
     // Which stage the lantern is on, 1 at the start of the game
@@ -110,23 +152,15 @@ public class LanternController : MonoBehaviour, IDamagable
     {
         lightStage++;
 
-        switch (lightStage)
+        // Start the fade from whatever colour is on screen now, so back-to-back stages still blend
+        colorFrom = CurrentColor;
+        colorTo = StageColor(lightStage);
+        colorBlend = 0f;
+
+        if (lightStage == 5)
         {
-            // Each stage burns hotter: deeper orange through to near-white
-            case 2:
-                lightObject.color = new Color(1f, 0.72f, 0.35f);
-                break;
-            case 3:
-                lightObject.color = new Color(1f, 0.84f, 0.5f);
-                break;
-            case 4:
-                lightObject.color = new Color(1f, 0.93f, 0.72f);
-                break;
-            case 5:
-                lightObject.color = Color.white;
-                print("Game won!");
-                // TODO: Make end game code
-                break;
+            print("Game won!");
+            // TODO: Make end game code
         }
 
         Debug.Log("[Lantern] reached light stage " + lightStage);

@@ -21,6 +21,7 @@ public class LampSuck : MonoBehaviour
 
     [Header("Lamp Light")]
     [SerializeField] private Light lampLight;
+    [Tooltip("Colour used when there's no lantern. With one, the lantern's stage colour wins")]
     [SerializeField] private Color lightColor = new Color(1f, 0.78f, 0.35f);
     [Tooltip("Seconds to morph between circle and beam")]
     [SerializeField] private float transitionTime = 0.3f;
@@ -75,6 +76,12 @@ public class LampSuck : MonoBehaviour
 
     // The lantern works out how big its light has grown, and the lamp simply follows it
     private float Growth => lantern != null ? lantern.LightGrowth : 1f;
+
+    // Colour comes from the lantern, which eases it across when you reach a new light stage
+    private Color LampColor => lantern != null ? lantern.CurrentColor : lightColor;
+
+    // Dims as the last of the light goes, on top of the lamp shrinking
+    private float Brightness => lantern != null ? lantern.LightBrightness : 1f;
 
     // How far the lamp reaches right now
     public float Range => range * Growth;
@@ -246,6 +253,7 @@ public class LampSuck : MonoBehaviour
 
         lampLight = lightObject.AddComponent<Light>();
         lampLight.type = LightType.Spot;
+        lampLight.color = LampColor;
     }
 
     // Put the player's renderers on their own rendering layer and leave that layer out of the lamp,
@@ -280,6 +288,7 @@ public class LampSuck : MonoBehaviour
         float t = Mathf.SmoothStep(0f, 1f, beamAmount);
 
         float flicker = 1f + (Mathf.PerlinNoise(Time.time * flickerSpeed, 0f) * 2f - 1f) * flickerAmount;
+        flicker *= Brightness;
         float growth = Growth;
         float radius = circleRadius * growth;
         // Light fades with distance squared, so a beam twice as long needs four times the intensity
@@ -295,7 +304,7 @@ public class LampSuck : MonoBehaviour
 
         float angle = Mathf.Lerp(circleAngle, beamAngle, t);
 
-        lampLight.color = lightColor;
+        lampLight.color = LampColor;
         lampLight.intensity = Mathf.Lerp(circleIntensity, beamIntensity, t) * flicker;
         lampLight.range = Mathf.Lerp(circleRange, Range * beamRangeMultiplier, t);
         lampLight.spotAngle = angle;
