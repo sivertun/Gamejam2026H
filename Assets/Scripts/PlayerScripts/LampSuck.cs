@@ -14,6 +14,8 @@ public class LampSuck : MonoBehaviour
     [SerializeField, Range(1f, 120f)] private float suckAngle = 30f;
     [SerializeField] private float pullSpeed = 6f;
     [SerializeField] private float absorbDistance = 1f;
+    [Tooltip("Sideways room either side of the beam for grabbing things close to you, in units")]
+    [SerializeField] private float grabWidth = 1.5f;
     [Tooltip("Things that block sucking (e.g. trees). Leave as Everything to block on any collider.")]
     [SerializeField] private LayerMask blockingLayers = ~0;
 
@@ -163,7 +165,11 @@ public class LampSuck : MonoBehaviour
             Vector3 toTarget = target.position - origin;
             // Bodies drain wherever the beam lights them, pickups need the narrower suck cone
             float allowedAngle = drainable != null ? beamAngle * 0.5f : halfAngle;
-            if (Vector3.Angle(transform.forward, toTarget) > allowedAngle) continue;
+            float angle = Vector3.Angle(transform.forward, toTarget);
+            // A fixed angle closes to nothing right in front of you, so something being pulled in
+            // would slip out of the cone just before it arrived. Allow a sideways wobble as well.
+            float sideways = Mathf.Sin(angle * Mathf.Deg2Rad) * toTarget.magnitude;
+            if (angle > allowedAngle && sideways > grabWidth) continue;
             if (IsBlocked(origin, toTarget, target)) continue;
 
             if (drainable != null)

@@ -10,18 +10,16 @@ public class LanternController : MonoBehaviour, IDamagable
     [SerializeField] private int maxLightIntensity = 30;
     [Tooltip("Light lost every time you get hit, whatever hit you. 1 = a whole light stage")]
     [SerializeField] private float lightLostPerHit = 0.0625f;
-    [Tooltip("Light every reached stage keeps for good, so upgrading never makes the lantern dimmer")]
-    [SerializeField] private float stagePermanentLight = 0.15f;
-    [Tooltip("Light the lantern starts each stage with")]
+    [Tooltip("Light the lantern starts the game with")]
     [SerializeField] private float startLightLevel = 0.2f;
 
     [Header("How far the light reaches")]
     [Tooltip("Smallest the light shrinks to when it's nearly out, against its starting size")]
-    [SerializeField] private float minGrowth = 0.5f;
+    [SerializeField] private float minGrowth = 0.8f;
     [Tooltip("Largest the light ever grows to, against its starting size")]
-    [SerializeField] private float maxGrowth = 2f;
-    [Tooltip("Total light at which it reaches its largest")]
-    [SerializeField] private float lightForMaxGrowth = 1.5f;
+    [SerializeField] private float maxGrowth = 4f;
+    [Tooltip("Light level at which it reaches its largest. Light stage 5 is at 4")]
+    [SerializeField] private float lightForMaxGrowth = 4f;
     private int lightStage = 1;
     private float lightLevel;
     private Light lightObject;
@@ -55,9 +53,10 @@ public class LanternController : MonoBehaviour, IDamagable
         }
     }
 
-    // All the light the lantern is burning: what's in it now plus what each stage keeps for good.
-    // This is the one number the rest of the game reads, see LampSuck and EnemySpawner.
-    public float TotalLight => lightLevel + (lightStage - 1) * stagePermanentLight;
+    // All the light in the lantern, and the one number the rest of the game reads. It is your
+    // health, it sets how far and how brightly you see, and the whole numbers it passes are the
+    // light stages. Only decay and damage take it away.
+    public float TotalLight => lightLevel;
 
     // What TotalLight is at the very start of the game, so others can size themselves against it
     public float StartLight => startLightLevel;
@@ -85,16 +84,9 @@ public class LanternController : MonoBehaviour, IDamagable
     // How full the lantern is within the current stage
     public float LightLevel => lightLevel;
 
-    // 0 at the start of the game and +1 for every light stage gained, running smoothly across
-    // upgrades. Used as the difficulty clock, see EnemySpawner.
-    public float LightProgress
-    {
-        get
-        {
-            float stageSpan = Mathf.Max(1f - startLightLevel, 0.0001f);
-            return (lightStage - 1) + Mathf.Clamp01((lightLevel - startLightLevel) / stageSpan);
-        }
-    }
+    // Light banked since the game began: 0 at the start, about +1 per light stage. Used as the
+    // difficulty clock, see EnemySpawner.
+    public float LightProgress => Mathf.Max(0f, lightLevel - startLightLevel);
 
     private bool CheckLightDead()
     {
@@ -108,33 +100,37 @@ public class LanternController : MonoBehaviour, IDamagable
 
     public void UpgradeLightLevel(float lightAmount) {
         lightLevel += lightAmount;
-        if (lightLevel >= 1) {
-            lightLevel = startLightLevel;
-            lightStage++;
 
-            switch (lightStage)
-            {
-                // Each stage burns hotter: deeper orange through to near-white
-                case 2:
-                    lightObject.color = new Color(1f, 0.72f, 0.35f);
-                    break;
-                case 3:
-                    lightObject.color = new Color(1f, 0.84f, 0.5f);
-                    break;
-                case 4:
-                    lightObject.color = new Color(1f, 0.93f, 0.72f);
-                    break;
-                case 5:
-                    print("Game won!");
-                    // TODO: Make end game code
-                    break;
-                default:
-                    Debug.LogWarning("Initiated lightStage that does not exist! Warning!");
-                    break;
-            }
-            Debug.Log("[Lantern] reached light stage " + lightStage);
-            NotifyOnLightStageUpgrade();
+        // Stages are milestones the light passes, not a bar that empties, so reaching one never
+        // costs you brightness or reach. Stage 2 is at 1 light, stage 3 at 2, and so on.
+        while (lightLevel >= lightStage) ReachNextStage();
+    }
+
+    private void ReachNextStage()
+    {
+        lightStage++;
+
+        switch (lightStage)
+        {
+            // Each stage burns hotter: deeper orange through to near-white
+            case 2:
+                lightObject.color = new Color(1f, 0.72f, 0.35f);
+                break;
+            case 3:
+                lightObject.color = new Color(1f, 0.84f, 0.5f);
+                break;
+            case 4:
+                lightObject.color = new Color(1f, 0.93f, 0.72f);
+                break;
+            case 5:
+                lightObject.color = Color.white;
+                print("Game won!");
+                // TODO: Make end game code
+                break;
         }
+
+        Debug.Log("[Lantern] reached light stage " + lightStage);
+        NotifyOnLightStageUpgrade();
     }
 
     public void DowngradeLightLevel(float decreaseAmount)
