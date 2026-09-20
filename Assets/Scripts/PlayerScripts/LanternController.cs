@@ -9,6 +9,10 @@ public class LanternController : MonoBehaviour, IDamagable
     [SerializeField] private float decayPerSec = 0.01f;
     [SerializeField] private int maxLightIntensity = 30;
     [SerializeField] private float damageLightLevelConversion = 0.01f;
+    [Tooltip("Light every reached stage keeps for good, so upgrading never makes the lantern dimmer")]
+    [SerializeField] private float stagePermanentLight = 0.15f;
+    [Tooltip("How much further the lantern shines after each stage, in units")]
+    [SerializeField] private float rangePerStage = 2f;
     private int lightStage = 1;
     private float lightLevel = 0.2f;    
     private Light lightObject;
@@ -29,7 +33,7 @@ public class LanternController : MonoBehaviour, IDamagable
         if (invincibilityTimer != 0) invincibilityTimer = Mathf.Max(invincibilityTimer - Time.deltaTime, 0);
 
         lightLevel -= decayPerSec*Time.deltaTime;
-        lightObject.intensity = lightLevel*maxLightIntensity;
+        lightObject.intensity = (lightLevel + (lightStage - 1) * stagePermanentLight) * maxLightIntensity;
         if (CheckLightDead() == true)
         {
             dead = true;
@@ -55,14 +59,15 @@ public class LanternController : MonoBehaviour, IDamagable
 
             switch (lightStage)
             {
+                // Each stage burns hotter: deeper orange through to near-white
                 case 2:
-                    lightObject.color = Color.darkRed;
+                    lightObject.color = new Color(1f, 0.72f, 0.35f);
                     break;
                 case 3:
-                    lightObject.color = Color.darkGreen;
+                    lightObject.color = new Color(1f, 0.84f, 0.5f);
                     break;
                 case 4:
-                    lightObject.color = Color.darkMagenta;
+                    lightObject.color = new Color(1f, 0.93f, 0.72f);
                     break;
                 case 5:
                     print("Game won!");
@@ -72,6 +77,8 @@ public class LanternController : MonoBehaviour, IDamagable
                     Debug.LogWarning("Initiated lightStage that does not exist! Warning!");
                     break;
             }
+            lightObject.range += rangePerStage;
+            Debug.Log("[Lantern] reached light stage " + lightStage);
             NotifyOnLightStageUpgrade();
         }
     }

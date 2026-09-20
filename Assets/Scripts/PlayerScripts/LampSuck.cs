@@ -73,6 +73,9 @@ public class LampSuck : MonoBehaviour
 
     private Vector3 Origin => transform.TransformPoint(lightOffset);
 
+    // Where the lamp swallows things, used by drainables to fly their particles in
+    public Vector3 LampOrigin => Origin;
+
     private List<IRunawayEnemy> runawayenemies = new List<IRunawayEnemy>();
     private bool hasCalledComeback = false;
 
@@ -149,7 +152,9 @@ public class LampSuck : MonoBehaviour
             if (!seen.Add(target)) continue;
 
             Vector3 toTarget = target.position - origin;
-            if (Vector3.Angle(transform.forward, toTarget) > halfAngle) continue;
+            // Bodies drain wherever the beam lights them, pickups need the narrower suck cone
+            float allowedAngle = drainable != null ? beamAngle * 0.5f : halfAngle;
+            if (Vector3.Angle(transform.forward, toTarget) > allowedAngle) continue;
             if (IsBlocked(origin, toTarget, target)) continue;
 
             if (drainable != null)

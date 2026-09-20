@@ -7,18 +7,18 @@ using UnityEngine.Rendering.Universal;
 public class DarkAtmosphere : MonoBehaviour
 {
     [Header("Darkness")]
-    [SerializeField] private Color ambientColor = new Color(0.07f, 0.07f, 0.1f);
+    [SerializeField] private Color ambientColor = new Color(0.17f, 0.18f, 0.24f);
     [SerializeField] private Color fogColor = Color.black;
-    [SerializeField] private float fogDensity = 0.035f;
+    [SerializeField] private float fogDensity = 0.02f;
 
     [Header("Moonlight (directional lights)")]
     [SerializeField] private Color moonColor = new Color(0.45f, 0.55f, 0.85f);
-    [SerializeField] private float moonIntensity = 0.2f;
+    [SerializeField] private float moonIntensity = 0.5f;
 
     [Header("Post Processing")]
     [Tooltip("Overall brightness. Raise if it's too dark, lower for more darkness")]
-    [SerializeField, Range(-2f, 3f)] private float exposure = 0.7f;
-    [SerializeField, Range(0f, 1f)] private float vignette = 0.4f;
+    [SerializeField, Range(-2f, 3f)] private float exposure = 1f;
+    [SerializeField, Range(0f, 1f)] private float vignette = 0.32f;
     [SerializeField] private float bloomIntensity = 1.2f;
     [SerializeField] private float bloomThreshold = 0.8f;
     [SerializeField, Range(0f, 1f)] private float filmGrain = 0.3f;
