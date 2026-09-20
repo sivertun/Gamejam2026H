@@ -35,6 +35,8 @@ public class EnemyCorpse : MonoBehaviour, IDrainable
     private Vector3 modelStartScale = Vector3.one;
     private LanternController lantern;
     private float drained;
+    private float lastDrainTime = float.NegativeInfinity;
+    private bool emitting = true;
     private bool fading;
 
     void Awake()
@@ -49,6 +51,51 @@ public class EnemyCorpse : MonoBehaviour, IDrainable
             ParticleSystem.ExternalForcesModule forces = system.externalForces;
             forces.enabled = false;
         }
+
+        // A body gives nothing away until you put the beam on it
+        SetEmitting(false);
+    }
+
+    void Update()
+    {
+        if (fading) return;
+        // OnDrain runs from LampSuck's own Update, so leave a little slack before going dark again
+        if (Time.time - lastDrainTime > 0.1f) SetEmitting(false);
+    }
+
+    private void SetEmitting(bool value)
+    {
+        if (emitting == value) return;
+        emitting = value;
+
+        foreach (ParticleSystem system in particles)
+        {
+            ParticleSystem.EmissionModule emission = system.emission;
+            emission.enabled = value;
+
+            if (value)
+            {
+                if (!system.isPlaying) system.Play();
+            }
+            else
+            {
+                FadeOutQuickly(system); // the leftovers wink out instead of hanging in the air
+            }
+        }
+    }
+
+    private void FadeOutQuickly(ParticleSystem system)
+    {
+        int count = system.particleCount;
+        if (count == 0) return;
+        if (buffer == null || buffer.Length < count) buffer = new ParticleSystem.Particle[count + 64];
+
+        int read = system.GetParticles(buffer);
+        for (int i = 0; i < read; i++)
+        {
+            buffer[i].remainingLifetime = Mathf.Min(buffer[i].remainingLifetime, 0.25f);
+        }
+        system.SetParticles(buffer, read);
     }
 
     void OnEnable()
@@ -66,6 +113,9 @@ public class EnemyCorpse : MonoBehaviour, IDrainable
     public void OnDrain(LampSuck lamp, float deltaTime)
     {
         if (fading) return;
+
+        lastDrainTime = Time.time;
+        SetEmitting(true);
 
         if (lantern == null) lantern = lamp.GetComponentInParent<LanternController>();
 

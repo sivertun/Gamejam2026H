@@ -8,6 +8,7 @@ using UnityEngine.Rendering.Universal;
 public class LampSuck : MonoBehaviour
 {
     [Header("Suck")]
+    [Tooltip("How far the lamp reaches with a starting lantern. It grows and shrinks with the light")]
     [SerializeField] private float range = 6f;
     [Tooltip("Full angle of the area that sucks. Keep this narrower than the beam.")]
     [SerializeField, Range(1f, 120f)] private float suckAngle = 30f;
@@ -57,18 +58,45 @@ public class LampSuck : MonoBehaviour
     [Tooltip("Force fields that pull enemy particles into the lamp (ParticleSucker). Found on the player automatically if left empty")]
     [SerializeField] private ParticleSystemForceField[] particleFields;
 
+    [Header("Lantern")]
+    [Tooltip("Lantern whose light sets the size of the lamp. Found on the player automatically if left empty")]
+    [SerializeField] private LanternController lantern;
+    [Tooltip("Smallest the lamp shrinks to when your light is nearly out, against its starting size")]
+    [SerializeField] private float minGrowth = 0.5f;
+    [Tooltip("Largest the lamp ever grows to, against its starting size")]
+    [SerializeField] private float maxGrowth = 2f;
+    [Tooltip("Total lantern light at which the lamp reaches its largest")]
+    [SerializeField] private float lightForMaxGrowth = 1.5f;
+
     [Header("Input Actions")]
     public InputActionReference suckAction;
 
     private InputAction action;
     private float beamAmount; // 0 = circle, 1 = beam
-    private float startRange;
     private float[] particleFieldStartRanges;
     private float[] particleFieldEndRanges;
     private float largestParticleField;
 
-    // How much the lamp has grown from absorbing fire (1 = starting size)
-    private float Growth => startRange > 0f ? range / startRange : 1f;
+    // How big the lamp is against the start of the game, straight from the lantern's light.
+    // Lose light and the darkness closes in; bank light and you see further.
+    private float Growth
+    {
+        get
+        {
+            if (lantern == null || lantern.StartLight <= 0f) return 1f;
+
+            float light = lantern.TotalLight;
+            float start = lantern.StartLight;
+
+            // A starting lantern gives exactly the sizes set above. Below that the darkness closes
+            // in on you, above it the lamp opens up but levels off.
+            if (light < start) return Mathf.Lerp(minGrowth, 1f, Mathf.Clamp01(light / start));
+            return Mathf.Lerp(1f, maxGrowth, Mathf.InverseLerp(start, Mathf.Max(lightForMaxGrowth, start + 0.01f), light));
+        }
+    }
+
+    // How far the lamp reaches right now
+    public float Range => range * Growth;
     private readonly HashSet<Transform> seen = new HashSet<Transform>();
 
     private Vector3 Origin => transform.TransformPoint(lightOffset);
@@ -85,7 +113,9 @@ public class LampSuck : MonoBehaviour
         action = suckAction != null ? suckAction.action : InputSystem.actions?.FindAction("Player/Suck");
         if (action == null) Debug.LogWarning("LampSuck: no suck action assigned or found", this);
 
-        startRange = range;
+        if (lantern == null) lantern = GetComponentInParent<LanternController>();
+        if (lantern == null) Debug.LogWarning("LampSuck: no lantern found, the lamp will stay its starting size", this);
+
         SetupLight();
         ExcludePlayerFromLamp();
         ApplyLight();
@@ -134,7 +164,7 @@ public class LampSuck : MonoBehaviour
         float halfAngle = suckAngle * 0.5f;
         seen.Clear();
 
-        foreach (Collider collider in Physics.OverlapSphere(origin, range))
+        foreach (Collider collider in Physics.OverlapSphere(origin, Range))
         {
             if (collider.transform.IsChildOf(transform)) continue;
 
@@ -188,12 +218,6 @@ public class LampSuck : MonoBehaviour
         return false;
     }
 
-    // Grows the suck range, and the beam and circle with it (see Growth in ApplyLight)
-    public void AddRange(float rangeBonus)
-    {
-        range += rangeBonus;
-    }
-
     private void SetupParticleFields()
     {
         if (particleFields == null || particleFields.Length == 0)
@@ -219,7 +243,7 @@ public class LampSuck : MonoBehaviour
     {
         if (particleFields == null || largestParticleField <= 0f) return;
 
-        float scale = range / largestParticleField;
+        float scale = Range / largestParticleField;
         for (int i = 0; i < particleFields.Length; i++)
         {
             if (particleFields[i] == null) continue;
@@ -288,7 +312,7 @@ public class LampSuck : MonoBehaviour
 
         lampLight.color = lightColor;
         lampLight.intensity = Mathf.Lerp(circleIntensity, beamIntensity, t) * flicker;
-        lampLight.range = Mathf.Lerp(circleRange, range * beamRangeMultiplier, t);
+        lampLight.range = Mathf.Lerp(circleRange, Range * beamRangeMultiplier, t);
         lampLight.spotAngle = angle;
         lampLight.innerSpotAngle = Mathf.Lerp(1f, angle, Mathf.Lerp(circleEdgeHardness, beamEdgeHardness, t));
 
@@ -304,7 +328,7 @@ public class LampSuck : MonoBehaviour
     void OnDrawGizmos()
     {
         Vector3 origin = Origin;
-        Vector3 forward = transform.forward * range;
+        Vector3 forward = transform.forward * Range;
 
         // Suck area
         Gizmos.color = Color.red;

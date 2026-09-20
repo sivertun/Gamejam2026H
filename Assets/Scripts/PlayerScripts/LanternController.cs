@@ -8,13 +8,16 @@ public class LanternController : MonoBehaviour, IDamagable
     private float invincibilityTimer;
     [SerializeField] private float decayPerSec = 0.01f;
     [SerializeField] private int maxLightIntensity = 30;
-    [SerializeField] private float damageLightLevelConversion = 0.01f;
+    [Tooltip("Light lost every time you get hit, whatever hit you. 1 = a whole light stage")]
+    [SerializeField] private float lightLostPerHit = 0.0625f;
     [Tooltip("Light every reached stage keeps for good, so upgrading never makes the lantern dimmer")]
     [SerializeField] private float stagePermanentLight = 0.15f;
     [Tooltip("How much further the lantern shines after each stage, in units")]
     [SerializeField] private float rangePerStage = 2f;
+    [Tooltip("Light the lantern starts each stage with")]
+    [SerializeField] private float startLightLevel = 0.2f;
     private int lightStage = 1;
-    private float lightLevel = 0.2f;    
+    private float lightLevel;
     private Light lightObject;
     List<ILightStageObserver> observers = new List<ILightStageObserver>();
     private bool dead;
@@ -24,6 +27,7 @@ public class LanternController : MonoBehaviour, IDamagable
     void Awake()
     {
         lightObject = GetComponent<Light>();
+        lightLevel = startLightLevel;
     }
 
 
@@ -33,11 +37,35 @@ public class LanternController : MonoBehaviour, IDamagable
         if (invincibilityTimer != 0) invincibilityTimer = Mathf.Max(invincibilityTimer - Time.deltaTime, 0);
 
         lightLevel -= decayPerSec*Time.deltaTime;
-        lightObject.intensity = (lightLevel + (lightStage - 1) * stagePermanentLight) * maxLightIntensity;
+        lightObject.intensity = TotalLight * maxLightIntensity;
         if (CheckLightDead() == true)
         {
             dead = true;
             DeathSequence.Play();
+        }
+    }
+
+    // All the light the lantern is burning: what's in it now plus what each stage keeps for good.
+    // This is the one number the rest of the game reads, see LampSuck and EnemySpawner.
+    public float TotalLight => lightLevel + (lightStage - 1) * stagePermanentLight;
+
+    // What TotalLight is at the very start of the game, so others can size themselves against it
+    public float StartLight => startLightLevel;
+
+    // Which stage the lantern is on, 1 at the start of the game
+    public int LightStage => lightStage;
+
+    // How full the lantern is within the current stage
+    public float LightLevel => lightLevel;
+
+    // 0 at the start of the game and +1 for every light stage gained, running smoothly across
+    // upgrades. Used as the difficulty clock, see EnemySpawner.
+    public float LightProgress
+    {
+        get
+        {
+            float stageSpan = Mathf.Max(1f - startLightLevel, 0.0001f);
+            return (lightStage - 1) + Mathf.Clamp01((lightLevel - startLightLevel) / stageSpan);
         }
     }
 
@@ -54,7 +82,7 @@ public class LanternController : MonoBehaviour, IDamagable
     public void UpgradeLightLevel(float lightAmount) {
         lightLevel += lightAmount;
         if (lightLevel >= 1) {
-            lightLevel = 0.2f;
+            lightLevel = startLightLevel;
             lightStage++;
 
             switch (lightStage)
@@ -110,7 +138,8 @@ public class LanternController : MonoBehaviour, IDamagable
         if (invincibilityTimer != 0) return;
         invincibilityTimer = invincibilityTime;
 
-        lightLevel -= damage * damageLightLevelConversion;
+        // Every hit costs the same, however hard it hit, so the cost is easy to read while playing
+        DowngradeLightLevel(lightLostPerHit);
 
         Vector3 heading = transform.position - source.position;
         Vector3 direction = heading.normalized;

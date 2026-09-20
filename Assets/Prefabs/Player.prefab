@@ -386,7 +386,6 @@ MonoBehaviour:
   invincibilityTime: 0.5
   decayPerSec: 0.01
   maxLightIntensity: 30
-  damageLightLevelConversion: 0.001
   gameController: {fileID: 6973134611896613761}
 --- !u!108 &7449875535530436489
 Light:
@@ -1154,6 +1153,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7965918266667472758}
     m_Modifications:
+    - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
+      propertyPath: spawnRate
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
+      propertyPath: startStage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
+      propertyPath: ratePerStage
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
+      propertyPath: maxRate
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 292679811867140161, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1231,6 +1246,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7965918266667472758}
     m_Modifications:
+    - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
+      propertyPath: startStage
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
+      propertyPath: ratePerStage
+      value: 0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
+      propertyPath: maxRate
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 292679811867140161, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.58336
@@ -1281,7 +1308,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
       propertyPath: spawnRate
-      value: 0.2
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
       propertyPath: enemyPrefab
@@ -1399,6 +1426,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7965918266667472758}
     m_Modifications:
+    - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
+      propertyPath: startStage
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
+      propertyPath: ratePerStage
+      value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
+      propertyPath: maxRate
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 292679811867140161, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1445,7 +1484,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
       propertyPath: spawnRate
-      value: 0.15
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 7250944790126139406, guid: b3c19644200a02e3598dc95a0758a1fc, type: 3}
       propertyPath: enemyPrefab
