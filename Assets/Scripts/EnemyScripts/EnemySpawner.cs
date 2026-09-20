@@ -9,6 +9,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float maxRange;
     [SerializeField] private float spawnRate;
     private float spawnAccumulator = 0;
+    public bool isActive = false;
 
 
     void Update()
@@ -35,11 +36,13 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemy(Vector3 position)
 {
-    GameObject enemy = Instantiate(enemyPrefab, position, Quaternion.identity);
-    IHasTarget[] targetScripts = enemy.GetComponents<IHasTarget>();
-    foreach (IHasTarget script in targetScripts)
-    {
-        script.SetTarget(enemyTarget);
+    if (isActive){
+        GameObject enemy = Instantiate(enemyPrefab, position, Quaternion.identity);
+        IHasTarget[] targetScripts = enemy.GetComponents<IHasTarget>();
+        foreach (IHasTarget script in targetScripts)
+        {
+            script.SetTarget(enemyTarget);
+        }
     }
 }
 }

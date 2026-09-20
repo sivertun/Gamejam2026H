@@ -11,6 +11,10 @@ public class GameController : MonoBehaviour
     [Header("Menu UI slide-up")]
     [SerializeField] private float uiSlideDuration = 3f;
     [SerializeField] private float uiSlideDistance = 10f; // how far up the sprite moves, in world units
+    [SerializeField] private EnemySpawner basicSpawn;
+    [SerializeField] private EnemySpawner runSpawn;
+    [SerializeField] private EnemySpawner forSpawn;
+    [SerializeField] private GameObject text;
 
     bool started = false;
 
@@ -18,6 +22,7 @@ public class GameController : MonoBehaviour
     {
         player.enabled = false;
         menuUI.SetActive(true);
+        text.SetActive(true);
     }
 
     void Update()
@@ -25,6 +30,7 @@ public class GameController : MonoBehaviour
         if (!started && AnyInputPressed())
         {
             started = true;
+            text.SetActive(false);
             StartCoroutine(SlideMenuUpThenStart());
             cameraMovement.BeginTransition();
         }
@@ -46,6 +52,9 @@ public class GameController : MonoBehaviour
         Debug.Log("Slide stop");
         menuUI.transform.position = endPos;
         menuUI.SetActive(false);
+        basicSpawn.isActive = true;
+        forSpawn.isActive = true;
+        if(runSpawn)runSpawn.isActive=true;
     }
 
     // Called by CameraMovement once it finishes easing into the player
@@ -63,5 +72,11 @@ public class GameController : MonoBehaviour
             return true;
 
         return false;
+    }
+
+    public void dead(){
+        if(basicSpawn)basicSpawn.isActive = false;
+        if(forSpawn)forSpawn.isActive = false;
+        if(runSpawn)runSpawn.isActive=false;
     }
 }
