@@ -32,6 +32,8 @@ public class LanternController : MonoBehaviour, IDamagable
     };
     [Tooltip("Seconds the light takes to bleed from one stage's colour into the next")]
     [SerializeField] private float colorTransitionTime = 1.5f;
+    [Tooltip("Reaching this stage wins the game and plays the rescue screen")]
+    [SerializeField] private int winStage = 5;
     private int lightStage = 1;
     private float lightLevel = 0.2f;
     private Color colorFrom;
@@ -40,6 +42,7 @@ public class LanternController : MonoBehaviour, IDamagable
     private bool colorsReady;
     List<ILightStageObserver> observers = new List<ILightStageObserver>();
     private bool dead;
+    private bool rescued;
 
     [SerializeField] private GameController gameController;
 
@@ -52,7 +55,7 @@ public class LanternController : MonoBehaviour, IDamagable
 
     void Update()
     {
-        if (dead) return;
+        if (dead || rescued) return;
         if (invincibilityTimer != 0) invincibilityTimer = Mathf.Max(invincibilityTimer - Time.deltaTime, 0);
 
         lightLevel -= decayPerSec*Time.deltaTime;
@@ -163,10 +166,12 @@ public class LanternController : MonoBehaviour, IDamagable
         colorTo = StageColor(lightStage);
         colorBlend = 0f;
 
-        if (lightStage == 5)
+        if (lightStage >= winStage)
         {
-            print("Game won!");
-            // TODO: Make end game code
+            // The run is over: stop the decay and the spawners, and roll the win screen.
+            rescued = true;
+            if (gameController) gameController.dead();
+            RescueSequence.Play();
         }
 
         Debug.Log("[Lantern] reached light stage " + lightStage);
@@ -197,6 +202,7 @@ public class LanternController : MonoBehaviour, IDamagable
 
     public void TakeDamage(float damage, float knockback, Transform source)
     {
+        if (dead || rescued) return;
         if (invincibilityTimer != 0) return;
         invincibilityTimer = invincibilityTime;
 
