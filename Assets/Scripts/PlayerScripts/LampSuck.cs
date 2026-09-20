@@ -61,12 +61,6 @@ public class LampSuck : MonoBehaviour
     [Header("Lantern")]
     [Tooltip("Lantern whose light sets the size of the lamp. Found on the player automatically if left empty")]
     [SerializeField] private LanternController lantern;
-    [Tooltip("Smallest the lamp shrinks to when your light is nearly out, against its starting size")]
-    [SerializeField] private float minGrowth = 0.5f;
-    [Tooltip("Largest the lamp ever grows to, against its starting size")]
-    [SerializeField] private float maxGrowth = 2f;
-    [Tooltip("Total lantern light at which the lamp reaches its largest")]
-    [SerializeField] private float lightForMaxGrowth = 1.5f;
 
     [Header("Input Actions")]
     public InputActionReference suckAction;
@@ -77,23 +71,8 @@ public class LampSuck : MonoBehaviour
     private float[] particleFieldEndRanges;
     private float largestParticleField;
 
-    // How big the lamp is against the start of the game, straight from the lantern's light.
-    // Lose light and the darkness closes in; bank light and you see further.
-    private float Growth
-    {
-        get
-        {
-            if (lantern == null || lantern.StartLight <= 0f) return 1f;
-
-            float light = lantern.TotalLight;
-            float start = lantern.StartLight;
-
-            // A starting lantern gives exactly the sizes set above. Below that the darkness closes
-            // in on you, above it the lamp opens up but levels off.
-            if (light < start) return Mathf.Lerp(minGrowth, 1f, Mathf.Clamp01(light / start));
-            return Mathf.Lerp(1f, maxGrowth, Mathf.InverseLerp(start, Mathf.Max(lightForMaxGrowth, start + 0.01f), light));
-        }
-    }
+    // The lantern works out how big its light has grown, and the lamp simply follows it
+    private float Growth => lantern != null ? lantern.LightGrowth : 1f;
 
     // How far the lamp reaches right now
     public float Range => range * Growth;

@@ -12,13 +12,20 @@ public class LanternController : MonoBehaviour, IDamagable
     [SerializeField] private float lightLostPerHit = 0.0625f;
     [Tooltip("Light every reached stage keeps for good, so upgrading never makes the lantern dimmer")]
     [SerializeField] private float stagePermanentLight = 0.15f;
-    [Tooltip("How much further the lantern shines after each stage, in units")]
-    [SerializeField] private float rangePerStage = 2f;
     [Tooltip("Light the lantern starts each stage with")]
     [SerializeField] private float startLightLevel = 0.2f;
+
+    [Header("How far the light reaches")]
+    [Tooltip("Smallest the light shrinks to when it's nearly out, against its starting size")]
+    [SerializeField] private float minGrowth = 0.5f;
+    [Tooltip("Largest the light ever grows to, against its starting size")]
+    [SerializeField] private float maxGrowth = 2f;
+    [Tooltip("Total light at which it reaches its largest")]
+    [SerializeField] private float lightForMaxGrowth = 1.5f;
     private int lightStage = 1;
     private float lightLevel;
     private Light lightObject;
+    private float startRange;
     List<ILightStageObserver> observers = new List<ILightStageObserver>();
     private bool dead;
 
@@ -28,6 +35,7 @@ public class LanternController : MonoBehaviour, IDamagable
     {
         lightObject = GetComponent<Light>();
         lightLevel = startLightLevel;
+        startRange = lightObject.range;
     }
 
 
@@ -37,7 +45,9 @@ public class LanternController : MonoBehaviour, IDamagable
         if (invincibilityTimer != 0) invincibilityTimer = Mathf.Max(invincibilityTimer - Time.deltaTime, 0);
 
         lightLevel -= decayPerSec*Time.deltaTime;
+        // Brighter and further together, so a dying lantern lights less ground as well as less well
         lightObject.intensity = TotalLight * maxLightIntensity;
+        lightObject.range = startRange * LightGrowth;
         if (CheckLightDead() == true)
         {
             dead = true;
@@ -51,6 +61,23 @@ public class LanternController : MonoBehaviour, IDamagable
 
     // What TotalLight is at the very start of the game, so others can size themselves against it
     public float StartLight => startLightLevel;
+
+    // How big the light is against the start of the game. Drives this lantern's own range and
+    // everything the lamp does, see LampSuck, so all of it grows and shrinks as one.
+    public float LightGrowth
+    {
+        get
+        {
+            if (startLightLevel <= 0f) return 1f;
+            float light = TotalLight;
+
+            // A starting lantern gives exactly the tuned sizes. Below that the darkness closes in
+            // on you, above it the light opens out but levels off.
+            if (light < startLightLevel) return Mathf.Lerp(minGrowth, 1f, Mathf.Clamp01(light / startLightLevel));
+            return Mathf.Lerp(1f, maxGrowth,
+                Mathf.InverseLerp(startLightLevel, Mathf.Max(lightForMaxGrowth, startLightLevel + 0.01f), light));
+        }
+    }
 
     // Which stage the lantern is on, 1 at the start of the game
     public int LightStage => lightStage;
@@ -105,7 +132,6 @@ public class LanternController : MonoBehaviour, IDamagable
                     Debug.LogWarning("Initiated lightStage that does not exist! Warning!");
                     break;
             }
-            lightObject.range += rangePerStage;
             Debug.Log("[Lantern] reached light stage " + lightStage);
             NotifyOnLightStageUpgrade();
         }
