@@ -236,6 +236,28 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4888267710888591229, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
   m_PrefabInstance: {fileID: 1226369344}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &388997660 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 425868772439290823, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+  m_PrefabInstance: {fileID: 1226369344}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d51619ecd6055fe9a606118e94f5910, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
+--- !u!114 &486873124 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6973134611896613761, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+  m_PrefabInstance: {fileID: 1226369344}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f105efccb0e95aca0818702326899a60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameController
 --- !u!1 &678013166
 GameObject:
   m_ObjectHideFlags: 0
@@ -379,6 +401,10 @@ PrefabInstance:
       propertyPath: enemyTarget
       value: 
       objectReference: {fileID: 377792876}
+    - target: {fileID: 4981410849197009739, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+      propertyPath: gameController
+      value: 
+      objectReference: {fileID: 486873124}
     - target: {fileID: 5697842136816540481, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: m_Name
       value: Player
@@ -387,6 +413,22 @@ PrefabInstance:
       propertyPath: spawnRate
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 6973134611896613761, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+      propertyPath: eSpawn
+      value: 
+      objectReference: {fileID: 2087221267}
+    - target: {fileID: 6973134611896613761, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+      propertyPath: forSpawn
+      value: 
+      objectReference: {fileID: 388997660}
+    - target: {fileID: 6973134611896613761, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+      propertyPath: runSpawn
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6973134611896613761, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+      propertyPath: basicSpawn
+      value: 
+      objectReference: {fileID: 2087221267}
     - target: {fileID: 8209145499965774042, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -432,6 +474,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+--- !u!114 &2087221267 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5816369402814378322, guid: e4212436dc1bf3711aba605eeba6d491, type: 3}
+  m_PrefabInstance: {fileID: 1226369344}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d51619ecd6055fe9a606118e94f5910, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
