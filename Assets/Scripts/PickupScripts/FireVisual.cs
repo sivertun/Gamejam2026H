@@ -20,7 +20,7 @@ public class FireVisual : MonoBehaviour
     [SerializeField, Range(0f, 0.6f)] private float flickerAmount = 0.25f;
     [SerializeField] private float flickerSpeed = 6f;
     [Tooltip("The light turns off further than this from the camera, there can be a lot of fires on the map")]
-    [SerializeField] private float lightCullDistance = 45f;
+    [SerializeField] private float lightCullDistance = 26f;
 
     private Transform flame;
     private Light fireLight;

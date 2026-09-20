@@ -129,11 +129,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fallTime: 0.6
-  sinkTime: 3
-  sinkDepth: 1.5
   maxCorpses: 20
   drainTime: 2
-  lightReward: 0.1
+  lightReward: 0.25
+  pullSpeed: 10
+  absorbDistance: 0.5
+  fadeTime: 1.2
+  sinkDepth: 1
 --- !u!1001 &8330268147452564004
 PrefabInstance:
   m_ObjectHideFlags: 0
