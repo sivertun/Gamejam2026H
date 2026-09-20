@@ -33,6 +33,8 @@ public class AssassinEnemy : MonoBehaviour, IHasTarget, IHasVelocity
         Vector3 targetVelocity = currentSpeed * moveDirection.normalized;
         velocity = Vector3.SmoothDamp(velocity, targetVelocity, ref movementDerivative, smoothTime);
         rb.MovePosition(transform.position + velocity * Time.fixedDeltaTime);
+
+        transform.LookAt(target);
     }
 
     public void SetTarget(GameObject target)
