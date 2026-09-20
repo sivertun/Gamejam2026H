@@ -3,14 +3,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/// Dark Souls-style "YOU DIED". Put this on an empty GameObject in your scene,
-/// assign the sound and font (both optional), then call DeathSequence.Play().
+/// Dark Souls-style "YOU DIED". Call DeathSequence.Play() from anywhere; no scene
+/// setup needed. Optional assets, loaded by name from any Resources folder:
+///   Assets/Resources/DeathSound  (audio clip, any extension)
+///   Assets/Resources/DeathFont   (font asset, any extension)
 /// Nothing persists across scene loads; all state resets whenever a scene loads.
 public class DeathSequence : MonoBehaviour
 {
-    [SerializeField] private AudioClip sfx;  // optional
-    [SerializeField] private Font font;      // optional, a serif looks way better
-
     // Check this in your player/input scripts if you want to freeze controls.
     public static bool IsDead { get; private set; }
 
@@ -43,10 +42,7 @@ public class DeathSequence : MonoBehaviour
     {
         if (IsDead) { Debug.Log("[DeathSequence] Play() ignored, already running"); return; }
         if (Instance == null)
-        {
-            Debug.LogWarning("[DeathSequence] No DeathSequence in scene, using defaults (no sound, default font)");
             new GameObject("DeathSequence").AddComponent<DeathSequence>(); // Awake sets Instance
-        }
         IsDead = true;
         Debug.Log("[DeathSequence] Play() started");
         Instance.StartCoroutine(Instance.Run());
@@ -54,6 +50,10 @@ public class DeathSequence : MonoBehaviour
 
     IEnumerator Run()
     {
+        var sfx = Resources.Load<AudioClip>("DeathSound");
+        var font = Resources.Load<Font>("DeathFont");
+        Debug.Log("[DeathSequence] sound: " + (sfx ? sfx.name : "NOT FOUND") + ", font: " + (font ? font.name : "default"));
+
         // ---------- build UI ----------
         Transform canvas = MakeCanvas(transform);
 
