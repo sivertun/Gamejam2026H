@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5944375139162771411
+--- !u!1 &6117611305543369287
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,52 +8,51 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 9002148283004051137}
-  - component: {fileID: 6362833839012512807}
-  - component: {fileID: 4593323306838703446}
-  - component: {fileID: 4055051296385882296}
-  - component: {fileID: 3062307694256772747}
-  - component: {fileID: 1021977041631942481}
-  - component: {fileID: 1881508175731016013}
-  - component: {fileID: -1425850510183538824}
-  - component: {fileID: 1465859742361348222}
+  - component: {fileID: 4305659219208546429}
+  - component: {fileID: 4050190043515209369}
+  - component: {fileID: 9061402469416653324}
+  - component: {fileID: 5555759523890739821}
+  - component: {fileID: 1600381907558625061}
+  - component: {fileID: 4420144696914478267}
+  - component: {fileID: 7562361062526695981}
+  - component: {fileID: 4629563191302169912}
   m_Layer: 0
-  m_Name: BasicEnemy
+  m_Name: AssassinEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &9002148283004051137
+--- !u!4 &4305659219208546429
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5944375139162771411}
+  m_GameObject: {fileID: 6117611305543369287}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: 1.5, z: 5}
+  m_LocalPosition: {x: 25.53, y: 1.74, z: 14.40649}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &6362833839012512807
+--- !u!33 &4050190043515209369
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5944375139162771411}
+  m_GameObject: {fileID: 6117611305543369287}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &4593323306838703446
+--- !u!23 &9061402469416653324
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5944375139162771411}
+  m_GameObject: {fileID: 6117611305543369287}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -96,13 +95,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &4055051296385882296
+--- !u!136 &5555759523890739821
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5944375139162771411}
+  m_GameObject: {fileID: 6117611305543369287}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -119,13 +118,13 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &3062307694256772747
+--- !u!54 &1600381907558625061
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5944375139162771411}
+  m_GameObject: {fileID: 6117611305543369287}
   serializedVersion: 5
   m_Mass: 1
   m_LinearDamping: 0
@@ -146,28 +145,13 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &1021977041631942481
+--- !u!114 &4420144696914478267
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5944375139162771411}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2bfe2818fb3d539fb5cdbde223381a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  target: {fileID: 0}
-  maxSpeed: 4
-  smoothTime: 0.2
---- !u!114 &1881508175731016013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5944375139162771411}
+  m_GameObject: {fileID: 6117611305543369287}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc8f801660b4ab290a89790346ae24c4, type: 3}
@@ -176,35 +160,32 @@ MonoBehaviour:
   invincibilityTime: 0.75
   maxHealth: 30
   deadPrefab: {fileID: 1588367899769044331, guid: 5f3373f39fe19696b9b263c0ae86aad9, type: 3}
---- !u!114 &-1425850510183538824
+--- !u!114 &7562361062526695981
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5944375139162771411}
+  m_GameObject: {fileID: 6117611305543369287}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c53855a80237e4738d993dd78050595, type: 3}
+  m_Script: {fileID: 11500000, guid: eb55514e2e2941f4cae8372f61528c2e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyMeleeAttack
+  m_EditorClassIdentifier: Assembly-CSharp::AssassinEnemy
   target: {fileID: 0}
-  hitboxPrefab: {fileID: 0}
-  hitboxSize: {x: 1, y: 1, z: 0.5}
-  hitboxOffset: {x: 0, y: 0, z: 0.5}
-  preHitBuffer: 0.1
-  cooldown: 1
-  lifetime: 0.4
-  damage: 10
-  knockback: 20
-  playerWidth: 1
---- !u!114 &1465859742361348222
+  maxSpeed: 6.5
+  minSpeed: 4
+  predictionAmount: 4
+  margin: 0.2
+  slowdownDistance: 4
+  smoothTime: 0.25
+--- !u!114 &4629563191302169912
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5944375139162771411}
+  m_GameObject: {fileID: 6117611305543369287}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8c53855a80237e4738d993dd78050595, type: 3}
@@ -217,6 +198,6 @@ MonoBehaviour:
   preHitBuffer: 0.1
   cooldown: 1
   lifetime: 0.4
-  damage: 10
-  knockback: 20
+  damage: 20
+  knockback: 30
   playerWidth: 1
